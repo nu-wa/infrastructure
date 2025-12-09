@@ -7,7 +7,7 @@ metadata:
   namespace: kong
 spec:
   interval: 10m
-  chart: mailu
+  chart: kong
   sourceRef:
     kind: HelmRepository
     name: kong-repository
@@ -17,8 +17,8 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-    name: kong
-    namespace: kong
+  name: kong
+  namespace: kong
 spec:
   interval: 1m0s
   targetNamespace: kong
