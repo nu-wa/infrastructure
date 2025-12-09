@@ -20,12 +20,12 @@ metadata:
     name: kong
     namespace: kong
 spec:
-    interval: 1m0s
-    targetNamespace: kong
-    chartRef:
-      kind: HelmChart
-      name: kong
-      namespace: kong
+  interval: 1m0s
+  targetNamespace: kong
+  chartRef:
+    kind: HelmChart
+    name: kong
+    namespace: kong
   values:
     env:
       admin_gui_url: "https://kong-manager.yannis.codes"

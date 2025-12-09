@@ -17,15 +17,15 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-    name: cert-manager
-    namespace: cert-manager
+  name: cert-manager
+  namespace: cert-manager
 spec:
-    interval: 1m0s
-    targetNamespace: cert-manager
-    chartRef:
-      kind: HelmChart
-      name: cert-manager-webhook-ovh
-      namespace: cert-manager
+  interval: 1m0s
+  targetNamespace: cert-manager
+  chartRef:
+    kind: HelmChart
+    name: cert-manager-webhook-ovh
+    namespace: cert-manager
   values:
     configVersion: "0.0.1"
     groupName: cluster.internal.nether
