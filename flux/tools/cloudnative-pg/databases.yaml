@@ -5,7 +5,7 @@ metadata:
   namespace: tools
 spec:
   name: authentik
-  owner: pgsql-authentik
+  owner: authentik
   cluster:
     name: global-pg
 ---
@@ -16,7 +16,7 @@ metadata:
   namespace: tools
 spec:
   name: gitlab
-  owner: pgsql-gitlab
+  owner: gitlab
   cluster:
     name: global-pg
 ---
@@ -27,7 +27,7 @@ metadata:
   namespace: tools
 spec:
   name: mailu
-  owner: pgsql-mailu
+  owner: mailu
   cluster:
     name: global-pg
 ---
@@ -38,6 +38,6 @@ metadata:
   namespace: tools
 spec:
   name: kong
-  owner: pgsql-kong
+  owner: kong
   cluster:
     name: global-pg

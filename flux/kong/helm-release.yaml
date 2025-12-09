@@ -27,7 +27,6 @@ spec:
     namespace: kong
   values:
     env:
-      admin_gui_url: "https://kong-manager.yannis.codes"
       database: "postgres"
       pg_host: "global-pg-rw.tools.svc.cluster.local"
       log_level: "debug"
@@ -44,7 +43,6 @@ spec:
           secretKeyRef:
             name: pgsql-kong
             key: password
-      PLUGINS: "bundled, oidc"
     migrations:
       enabled: true
       init: true
@@ -83,34 +81,6 @@ spec:
       enabled: true
       rbac:
         create: true
-    admin:
-      enabled: true
-      annotations:
-        konghq.com/protocol: "https"
-      ingress:
-        enabled: true
-        ingressClassName: "kong"
-        tls: yannis-codes
-        hostname: kong-admin.yannis.codes
-        annotations:
-          cert-manager.io/cluster-issuer: "le-prod"
-          konghq.com/https-redirect-status-code: "301"
-          konghq.com/protocols: "https"
-          konghq.com/protocol: "https"
-    manager:
-      enabled: true
-      annotations:
-        konghq.com/protocol: "https"
-      ingress:
-        enabled: true
-        ingressClassName: "kong"
-        tls: yannis-codes
-        hostname: kong-manager.yannis.codes
-        annotations:
-          cert-manager.io/cluster-issuer: "le-prod"
-          konghq.com/https-redirect-status-code: "301"
-          konghq.com/protocols: "https"
-          konghq.com/protocol: "https"
     certificates:
       enabled: false
 
