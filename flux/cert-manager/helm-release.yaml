@@ -19,12 +19,12 @@ metadata:
     name: cert-manager
     namespace: cert-manager
 spec:
-    interval: 1m0s
-    targetNamespace: cert-manager
-    chartRef:
-      kind: HelmChart
-      name: cert-manager
-      namespace: cert-manager
+  interval: 1m0s
+  targetNamespace: cert-manager
+  chartRef:
+    kind: HelmChart
+    name: cert-manager
+    namespace: cert-manager
   values:
     installCRDs: true
     enableCertificateOwnerRef: true

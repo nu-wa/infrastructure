@@ -130,7 +130,6 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: "le-prod"
           konghq.com/https-redirect-status-code: "301"
-          konghq.com/plugins="oauth2"
           konghq.com/protocols: "https"
           konghq.com/protocol: "https"
     certificates:
