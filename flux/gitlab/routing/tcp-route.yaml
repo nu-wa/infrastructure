@@ -1,0 +1,15 @@
+apiVersion: configuration.konghq.com/v1beta1
+kind: TCPIngress
+metadata:
+  name: gitlab-ssh
+  namespace: gitlab
+  labels:
+    app: gitlab
+  annotations:
+    kubernetes.io/ingress.class: kong
+spec:
+  rules:
+    - port: 10022
+      backend:
+        serviceName: gitlab-ssh
+        servicePort: 10022

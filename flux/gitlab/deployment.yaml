@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitlab
+  namespace: gitlab
+  labels:
+    app: gitlab
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: gitlab
+  template:
+    metadata:
+      labels:
+        app: gitlab
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: usage
+                    operator: In
+                    values:
+                      - worker
+      volumes:
+        - name: gitlab-config
+          persistentVolumeClaim:
+            claimName: gitlab-config
+        - name: gitlab-data
+          persistentVolumeClaim:
+            claimName: gitlab-data
+        - name: gitlab-secrets
+          secret:
+            secretName: gitlab-dot-rb-secret
+        - name: tz-config
+          hostPath:
+            path: /usr/share/zoneinfo/Europe/Paris
+        - name: license
+          configMap:
+            name: license
+      containers:
+        - name: gitlab-container
+          image: harbor.internal.yannis.codes/docker-mirror/gitlab/gitlab-ce:18.6.1-ce.0 # {"$imagepolicy": "gitlab:gitlab"}
+          imagePullPolicy: Always
+          ports:
+            - name: ssh
+              containerPort: 22
+            - name: web
+              containerPort: 9001
+          volumeMounts:
+            - name: gitlab-config
+              mountPath: /etc/gitlab
+            - name: gitlab-data
+              mountPath: /var/opt/gitlab
+            - name: gitlab-secrets
+              mountPath: "/etc/gitlab/gitlab.rb"
+              subPath: "configuration"
+              readOnly: true
+            - name: tz-config
+              mountPath: /etc/localtime
+          env:
+            - name: GITLAB_SKIP_UNMIGRATED_DATA_CHECK
+              value: "true"

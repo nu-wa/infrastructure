@@ -1,0 +1,146 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmchart-source-v1.json
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: kong
+  namespace: kong
+spec:
+  interval: 10m
+  chart: mailu
+  sourceRef:
+    kind: HelmRepository
+    name: kong-repository
+  version: "v2.46.0"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+    name: kong
+    namespace: kong
+spec:
+    interval: 1m0s
+    targetNamespace: kong
+    chartRef:
+      kind: HelmChart
+      name: kong
+      namespace: kong
+  values:
+    env:
+      admin_gui_url: "https://kong-manager.yannis.codes"
+      database: "kong"
+      pg_host: "global-pg-rw.tools.svc.cluster.local"
+      log_level: "debug"
+      pg_database: "kong"
+      pg_ssl: "off"
+      pg_ssl_verify: "off"
+      pg_user:
+        valueFrom:
+          secretKeyRef:
+            name: pgsql-kong
+            key: username
+      pg_password:
+        valueFrom:
+          secretKeyRef:
+            name: pgsql-kong
+            key: password
+      PLUGINS: "bundled, oidc"
+    migrations:
+      enabled: true
+      init: true
+      preUpgrade: true
+      postUpgrade: true
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: usage
+                  operator: In
+                  values:
+                    - worker
+    podLabels:
+      app.kubernetes.io/part-of: kong
+      mtls/name: kong-proxy
+    proxy:
+      enabled: true
+      loadBalancerIP: 10.15.25.100
+      externalTrafficPolicy: Local
+      stream:
+        - containerPort: 10022
+          servicePort: 10022
+          protocol: TCP
+      labels:
+        app.kubernetes.io/part-of: kong
+        app.kubernetes.io/component: proxy
+        mtls/name: kong-proxy
+    udpProxy:
+      enabled: false
+      externalTrafficPolicy: Local
+      loadBalancerIP: 10.15.25.101
+    ingressController:
+      installCRDs: true
+      enabled: true
+      rbac:
+        create: true
+    certificates:
+      enabled: true
+      clusterIssuer: "le-prod"
+      proxy:
+        enabled: true
+        commonName: "yannis.codes"
+        dnsNames:
+          - "*.yannis.codes"
+      admin:
+        enabled: true
+        commonName: "kong-manager.yannis.codes"
+        dnsNames:
+          - "kong-manager.yannis.codes"
+      portal:
+        enabled: false
+        commonName: "kong-portal.yannis.codes"
+        dnsNames:
+          - "kong-portal.yannis.codes"
+      cluster:
+        enabled: false
+    admin:
+      enabled: true
+      annotations:
+        konghq.com/protocol: "https"
+      ingress:
+        enabled: true
+        ingressClassName: kong
+        tls: kong-admin-yannis-codes
+        hostname: kong-admin.yannis.codes
+        annotations:
+          cert-manager.io/cluster-issuer: "le-prod"
+          konghq.com/https-redirect-status-code: "301"
+          konghq.com/protocols: "https"
+          konghq.com/protocol: "https"
+    manager:
+      enabled: true
+      annotations:
+        konghq.com/protocol: "https"
+      ingress:
+        enabled: true
+        ingressClassName: kong
+        tls: kong-manager-yannis-codes
+        hostname: kong-manager.yannis.codes
+        annotations:
+          cert-manager.io/cluster-issuer: "le-prod"
+          konghq.com/https-redirect-status-code: "301"
+          konghq.com/plugins="oauth2"
+          konghq.com/protocols: "https"
+          konghq.com/protocol: "https"
+    certificates:
+      enabled: true
+      clusterIssuer: "le-prod"
+      proxy:
+        clusterIssuer: "le-prod"
+        commonName: "yannis.codes"
+        dnsNames:
+          - *.yannis.codes
+          - *.kys.dog
+          - kys.dog
+

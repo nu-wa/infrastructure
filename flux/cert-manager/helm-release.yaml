@@ -1,0 +1,54 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmchart-source-v1.json
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  interval: 10m
+  chart: cert-manager
+  sourceRef:
+    kind: HelmRepository
+    name: jetstack
+  version: "v1.16.2"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+    name: cert-manager
+    namespace: cert-manager
+spec:
+    interval: 1m0s
+    targetNamespace: cert-manager
+    chartRef:
+      kind: HelmChart
+      name: cert-manager
+      namespace: cert-manager
+  values:
+    installCRDs: true
+    enableCertificateOwnerRef: true
+    prometheus:
+      servicemonitor:
+        enabled: true
+    http_proxy: "http://squid.vlan.internal.nether:3128"
+    https_proxy: "http://squid.vlan.internal.nether:3128"
+    no_proxy: "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.svc,.cluster.local,.internal.nether,.internal.yannis.codes"
+    featureGates: "AdditionalCertificateOutputFormats=true"
+    webhook:
+      featureGates: "AdditionalCertificateOutputFormats=true"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: usage
+                  operator: In
+                  values:
+                    - worker
+    podLabels:
+      environment: cert-manager
+      deployment: cert-manager
+      service: cert-manager
+

@@ -1,0 +1,82 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmchart-source-v1.json
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: cert-manager-webhook-ovh
+  namespace: cert-manager
+spec:
+  interval: 10m
+  chart: cert-manager-webhook-ovh
+  sourceRef:
+    kind: HelmRepository
+    name: cert-manager-webhook-ovh
+  version: "0.7.3"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+    name: cert-manager
+    namespace: cert-manager
+spec:
+    interval: 1m0s
+    targetNamespace: cert-manager
+    chartRef:
+      kind: HelmChart
+      name: cert-manager-webhook-ovh
+      namespace: cert-manager
+  values:
+    configVersion: "0.0.1"
+    groupName: cluster.internal.nether
+    certManager:
+      namespace: cert-manager
+    issuers:
+      - name: le-prod
+        create: true
+        email: nuwa@yannis.codes
+        namespace: cert-manager
+        kind: ClusterIssuer
+        ovhEndpointName: ovh-eu
+        acmeServerUrl: https://acme-v02.api.letsencrypt.org/directory
+        ovhAuthenticationRef:
+          applicationKeyRef:
+            name: ovh-credentials
+            key: OVH_APPLICATION_KEY
+          consumerKeyRef:
+            name: ovh-credentials
+            key: OVH_CONSUMER_KEY
+          applicationSecretRef:
+            name: ovh-credentials
+            key: OVH_APPLICATION_SECRET
+      - name: le-test
+        create: true
+        kind: ClusterIssuer
+        email: nuwa@yannis.codes
+        namespace: cert-manager
+        ovhEndpointName: ovh-eu
+        acmeServerUrl: https://acme-staging-v02.api.letsencrypt.org/directory
+        ovhAuthenticationRef:
+          applicationKeyRef:
+            name: ovh-credentials
+            key: OVH_APPLICATION_KEY
+          consumerKeyRef:
+            name: ovh-credentials
+            key: OVH_CONSUMER_KEY
+          applicationSecretRef:
+            name: ovh-credentials
+            key: OVH_APPLICATION_SECRET
+    environment:
+      HTTP_PROXY: "http://squid.vlan.internal.nether:3128"
+      HTTPS_PROXY: "http://squid.vlan.internal.nether:3128"
+      NO_PROXY: "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.svc,.cluster.local,.internal.nether"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: usage
+                  operator: In
+                  values:
+                    - worker
+

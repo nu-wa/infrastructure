@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - helm-release.yaml
+  - helm-repository.yaml
+
+  - ./extra/helm-release.yaml
+  - ./extra/helm-repository.yaml
+
+  - ./extensions/helm-release.yaml
+  - ./certs/yannis.codes.yaml
+

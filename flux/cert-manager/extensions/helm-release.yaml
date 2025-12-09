@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmchart-source-v1.json
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: cert-manager-csi-driver
+  namespace: cert-manager
+spec:
+  interval: 10m
+  chart: cert-manager-csi-driver
+  sourceRef:
+    kind: HelmRepository
+    name: jetstack
+  version: "v0.10.1"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+    name: cert-manager-csi-driver
+    namespace: cert-manager
+spec:
+    interval: 1m0s
+    targetNamespace: cert-manager
+    chartRef:
+      kind: HelmChart
+      name: cert-manager-csi-driver
+      namespace: cert-manager
+

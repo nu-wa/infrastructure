@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: mailu-ingress
+  namespace: mailu
+  labels:
+    app.kubernetes.io/component: front
+    app.kubernetes.io/instance: mailu
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: mail
+  annotations:
+    cert-manager.io/cluster-issuer: "le-prod"
+    konghq.com/protocols: "https"
+    konghq.com/protocol: "https"
+    konghq.com/https-redirect-status-code: "301"
+spec:
+  ingressClassName: kong
+  tls:
+    - secretName: yannis-codes
+      hosts:
+        - mail.yannis.codes
+  rules:
+    - host: mail.yannis.codes
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: mailu-front
+                port:
+                  number: 443
+

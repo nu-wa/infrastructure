@@ -1,0 +1,10 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: gitlab
+  namespace: gitlab
+spec:
+  secretRef:
+    name: flux-image-update-registry-auth
+  image: harbor.internal.yannis.codes/docker-mirror/gitlab/gitlab-ce
+  interval: 5m

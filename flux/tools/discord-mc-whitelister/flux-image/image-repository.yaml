@@ -1,0 +1,10 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+    name: discord-bot-minecraft-whitelister
+    namespace: tools
+spec:
+    secretRef:
+        name: flux-image-update-registry-auth
+    image: harbor.internal.yannis.codes/registry/discord-bot-minecraft-whitelister
+    interval: 5m

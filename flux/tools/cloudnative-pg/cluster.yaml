@@ -1,0 +1,50 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: global-pg
+  namespace: tools
+spec:
+  instances: 1
+  primaryUpdateStrategy: unsupervised
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: pgsql-superuser
+
+  storage:
+    size: 128Gi
+    pvcTemplate:
+      metadata:
+        name: global-pg
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 128Gi
+      storageClassName: longhorn
+  walStorage:
+    storageClassName: longhorn
+    size: 25Gi
+  managed:
+    roles:
+      - name: pgsql-authentik
+        ensure: present
+        login: true
+        passwordSecret:
+          name: pgsql-authentik
+      - name: pgsql-mailu
+        ensure: present
+        login: true
+        passwordSecret:
+          name: pgsql-mailu
+      - name: pgsql-kong
+        ensure: present
+        login: true
+        passwordSecret:
+          name: pgsql-kong
+      - name: pgsql-gitlab
+        ensure: present
+        login: true
+        passwordSecret:
+          name: pgsql-gitlab
+

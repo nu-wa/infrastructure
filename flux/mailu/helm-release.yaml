@@ -1,0 +1,206 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmchart-source-v1.json
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: mailu
+  namespace: mailu
+spec:
+  interval: 10m
+  chart: mailu
+  sourceRef:
+    kind: HelmRepository
+    name: mailu-repository
+  version: "2.1.2"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+    name: mailu
+    namespace: mailu
+spec:
+    interval: 1m0s
+    targetNamespace: mailu
+    chartRef:
+      kind: HelmChart
+      name: mailu
+      namespace: mailu
+  values:
+    global:
+      storageClass: "longhorn"
+      database:
+        roundcube:
+          username: "mailu"
+          existingSecret: "mailu-secrets"
+          existingSecretPasswordKey: "postgres-user-password"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: usage
+                  operator: In
+                  values:
+                    - worker
+    logLevel: DEBUG
+    hostnames:
+      - yannis.codes
+      - kys.dog
+    domain: yannis.codes
+    existingSecret: "mailu-secrets"
+    timezone: "Europe/Berlin"
+    mailuVersion: "2024.06.32"
+    initialAccount:
+      enabled: true
+      username: "admin"
+      domain: "yannis.codes"
+      existingSecret: "mailu-secrets"
+      existingSecretPasswordKey: "admin-account-password"
+    postmaster: admin
+    limits:
+      messageSizeLimitInMegabytes: 125
+    customization:
+      siteName: "Mail - yannis.codes"
+      website: "https://yannis.codes"
+    wildcardSenders:
+      - "gophish@kys.dog"
+    persistence:
+      single_pvc: false
+    postgresql:
+      enabled: true
+      architecture: standalone
+      auth:
+        existingSecret: "mailu-secrets"
+        secretKeys:
+          adminPasswordKey: "postgres-admin-password"
+          userPasswordKey: "postgres-user-password"
+          replicationPasswordKey: "postgres-replication-password" # Not used but set for posterity
+      primary:
+        persistence:
+          enabled: true
+          storageClass: "longhorn"
+          size: 32Gi
+          existingClaim: "mailu-postgresql"
+          claimNameOverride: "mailu-postgresql"
+    ingress:
+      enabled: false
+      existingSecret: "mailu-certificates"
+      ingressClassName: "kong"
+      annotations:
+        cert-manager.io/cluster-issuer: "le-prod"
+        kubernetes.io/ingress.class: "kong"
+        konghq.com/protocols: "https"
+    front:
+      extraEnvVarsCM: "extra-config"
+      hostPort:
+        enabled: false
+      service:
+        annotations:
+          konghq.com/protocol: https
+      externalService:
+        enabled: true
+        type: LoadBalancer
+        loadBalancerIP: "10.15.25.30"
+        externalTrafficPolicy: Local
+    admin:
+      extraEnvVarsCM: "extra-config"
+      extraEnvVars:
+        - name: I_KNOW_MY_SETUP_DOESNT_FIT_REQUIREMENTS_AND_WONT_FILE_ISSUES_WITHOUT_PATCHES
+          value: "true"
+      persistence:
+        size: 32Gi
+        storageClass: "longhorn"
+        accessModes:
+          - ReadWriteOnce
+        claimNameOverride: "mailu-admin"
+        existingClaim: "mailu-admin"
+    clamav:
+      extraEnvVarsCM: "extra-config"
+      persistence:
+        size: 8Gi
+        storageClass: "longhorn"
+        accessModes:
+          - ReadWriteOnce
+        claimNameOverride: "mailu-clamav"
+        existingClaim: "mailu-clamav"
+    rspamd:
+      extraEnvVarsCM: "extra-config"
+      persistence:
+        size: 4Gi
+        storageClass: "longhorn"
+        accessModes:
+          - ReadWriteOnce
+        claimNameOverride: "mailu-rspamd"
+        existingClaim: "mailu-rspamd"
+    redis:
+      extraEnvVarsCM: "extra-config"
+      master:
+        persistence:
+          size: 8Gi
+          storageClass: "longhorn"
+          accessModes:
+            - ReadWriteOnce
+          claimNameOverride: "mailu-redis"
+          existingClaim: "mailu-redis"
+    postfix:
+      extraEnvVarsCM: "extra-config"
+      persistence:
+        size: 32Gi
+        storageClass: "longhorn"
+        accessModes:
+          - ReadWriteOnce
+        claimNameOverride: "mailu-postfix"
+        existingClaim: "mailu-postfix"
+    dovecot:
+      extraEnvVarsCM: "extra-config"
+      compression: "lz4"
+      compressionLevel: 9
+      persistence:
+        size: 32Gi
+        storageClass: "longhorn"
+        accessModes:
+          - ReadWriteOnce
+        claimNameOverride: "mailu-dovecot"
+        existingClaim: "mailu-dovecot"
+    webmail:
+      extraEnvVarsCM: "extra-config"
+      roundcubePlugins:
+        - archive
+        - zipdownload
+        - markasjunk
+        - managesieve
+        - enigma
+        - carddav
+        - mailu
+      livenessProbe:
+        enabled: false
+      readinessProbe:
+        enabled: false
+      startupProbe:
+        enabled: false
+      persistence:
+        size: 32Gi
+        storageClass: "longhorn"
+        accessModes:
+          - ReadWriteOnce
+        claimNameOverride: "mailu-webmail"
+        existingClaim: "mailu-webmail"
+    webdav:
+      extraEnvVarsCM: "extra-config"
+      persistence:
+        size: 32Gi
+        storageClass: "longhorn"
+        accessModes:
+          - ReadWriteOnce
+        claimNameOverride: "mailu-webdav"
+        existingClaim: "mailu-webdav"
+    fetchmail:
+      extraEnvVarsCM: "extra-config"
+      persistence:
+        size: 32Gi
+        storageClass: "longhorn"
+        accessModes:
+          - ReadWriteOnce
+        claimNameOverride: "mailu-fetchmail"
+        existingClaim: "mailu-fetchmail"

@@ -1,0 +1,15 @@
+
+apiVersion: v1
+data:
+  HTTP_PROXY: http://squid.vlan.internal.nether:3128
+  HTTPS_PROXY: http://squid.vlan.internal.nether:3128
+  NO_PROXY: 127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.svc.cluster.local,.mailu.svc.cluster.internal.nether,.mailu.svc.cluster.local,.internal.yannis.codes
+  http_proxy: http://squid.vlan.internal.nether:3128
+  https_proxy: http://squid.vlan.internal.nether:3128
+  no_proxy: 127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.svc.cluster.local,.mailu.svc.cluster.internal.nether,.mailu.svc.cluster.local,.internal.yannis.codes
+  KUBERNETES_INGRESS: "true"
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: extra-config
+  namespace: mailu

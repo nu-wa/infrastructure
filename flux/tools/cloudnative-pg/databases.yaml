@@ -1,0 +1,43 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: authentik
+  namespace: tools
+spec:
+  name: authentik
+  owner: pgsql-authentik
+  cluster:
+    name: global-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: gitlab
+  namespace: tools
+spec:
+  name: gitlab
+  owner: pgsql-gitlab
+  cluster:
+    name: global-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: mailu
+  namespace: tools
+spec:
+  name: mailu
+  owner: pgsql-mailu
+  cluster:
+    name: global-pg
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: kong
+  namespace: tools
+spec:
+  name: kong
+  owner: pgsql-kong
+  cluster:
+    name: global-pg

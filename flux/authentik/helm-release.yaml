@@ -1,0 +1,103 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmchart-source-v1.json
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: authentik
+  namespace: authentik
+spec:
+  interval: 10m
+  chart: authentik
+  sourceRef:
+    kind: HelmRepository
+    name: authentik
+  version: "2025.10.2"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+    name: authentik
+    namespace: authentik
+spec:
+    interval: 1m0s
+    targetNamespace: authentik
+    chartRef:
+      kind: HelmChart
+      name: authentik
+      namespace: authentik
+    values:
+        global:
+            affinity:
+                nodeAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                        nodeSelectorTerms:
+                            - matchExpressions:
+                                  - key: usage
+                                    operator: In
+                                    values:
+                                        - worker
+            env:
+                - name: AUTHENTIK_DEFAULT_USER_CHANGE_USERNAME
+                  value: "true"
+            envFrom:
+                - secretRef:
+                      name: "authentik-secrets"
+        server:
+            ingress:
+                enabled: true
+                ingressClassName: "kong"
+                annotations:
+                    cert-manager.io/cluster-issuer: "le-prod"
+                    konghq.com/https-redirect-status-code: "301"
+                    konghq.com/protocols: "https"
+
+                tls:
+                    - secretName: yannis-codes
+                      hosts:
+                          - authentik.yannis.codes
+                hosts:
+                    - authentik.yannis.codes
+            volumes:
+                - name: postgres-creds
+                secret:
+                    secretName: pgsql-authentik
+            volumeMounts:
+                - name: postgres-creds
+                mountPath: /postgres-creds
+                readOnly: true
+        worker:
+            volumes:
+                - name: postgres-creds
+                secret:
+                    secretName: pgsql-authentik
+            volumeMounts:
+                - name: postgres-creds
+                mountPath: /postgres-creds
+                readOnly: true
+        authentik:
+          postgresql:
+            host: global-pg-rw.tools.svc.cluster.local
+            user: file:///postgres-creds/username
+            name: authentik
+            password: file:///postgres-creds/password
+            log_level: debug
+            email:
+                host: "mailu-front.mailu.svc.cluster.local"
+                username: "authentik@yannis.codes"
+                use_tls: true
+            redis:
+                host: "authentik-redis-headless.authentik.svc.cluster.local"
+            avatars: none
+            error_reporting:
+                enabled: false
+            disable_update_check: true
+            disable_startup_analytics: true
+        prometheus:
+            metrics:
+                serviceMonitor:
+                    enabled: true
+            rules:
+                enabled: true
+        redis:
+            enabled: true

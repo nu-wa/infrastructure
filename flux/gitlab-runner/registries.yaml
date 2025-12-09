@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitlab-runners-registries
+  namespace: gitlab
+data:
+  registries.conf: |
+    unqualified-search-registries = ['docker.io', 'harbor.internal.yannis.codes']
+
+    [[registry]]
+    prefix="quay.io"
+    location="harbor.internal.yannis.codes/quay-mirror"
+
+    [[registry]]
+    prefix="docker.io"
+    location="harbor.internal.yannis.codes/docker-mirror"
+
+    [[registry]]
+    prefix="gcr.io"
+    location="harbor.internal.yannis.codes/gcr-mirror"
+
+    [[registry]]
+    prefix="ghcr.io"
+    location="harbor.internal.yannis.codes/ghcr-mirror"
+
+    [[registry]]
+    prefix="registry.gitlab.com"
+    location="harbor.internal.yannis.codes/gitlab-mirror"

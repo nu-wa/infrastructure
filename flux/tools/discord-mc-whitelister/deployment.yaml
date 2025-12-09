@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-bot-minecraft-whitelister
+  namespace: tools
+  labels:
+    app: discord-bot
+    environment: production
+    deployment: discord-bot-minecraft-whitelister
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discord-bot
+      environment: production
+      deployment: discord-bot-minecraft-whitelister
+  template:
+    metadata:
+      labels:
+        app: discord-bot
+        environment: production
+        deployment: discord-bot-minecraft-whitelister
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: usage
+                    operator: In
+                    values:
+                      - worker
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: discord-bot-minecraft-whitelister-pvc
+      initContainers:
+        - name: discord-bot-minecraft-whitelister-fix-perms
+          image: busybox
+          command: ["/bin/chown", "-R", "1000:1000", "/app"]
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+      containers:
+        - name: discord-bot
+          image: "harbor.web.internal.nether/registry/discord-bot-minecraft-whitelister:a3e608ef-1749434422" # {"$imagepolicy": "tools:discord-bot-minecraft-whitelister"}
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+          envFrom:
+            - secretRef:
+                name: discord-bot-minecraft-whitelister
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "100m"
+            limits:
+              memory: "2Gi"
+              cpu: "800m"

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: discord-bot-minecraft-whitelister-pvc
+    namespace: tools
+spec:
+    accessModes:
+        - ReadWriteOnce
+    resources:
+        requests:
+            storage: 1Gi
+    storageClassName: longhorn
+    volumeName: discord-bot-minecraft-whitelister

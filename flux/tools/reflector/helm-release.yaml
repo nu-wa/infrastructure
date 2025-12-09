@@ -1,0 +1,36 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmchart-source-v1.json
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: reflector
+  namespace: tools
+spec:
+  interval: 10m
+  chart: reflector
+  sourceRef:
+    kind: HelmRepository
+    name: emberstack
+  version: "v9.1.12"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: reflector
+  namespace: tools
+spec:
+    interval: 1m0s
+    chartRef:
+      kind: HelmChart
+      name: reflector
+      namespace: tools
+    install:
+        remediation:
+            retries: 100
+    values:
+      cluster:
+        instances: 1
+        storage:
+          size: 128Gi
+          storageClass: "longhorn"
