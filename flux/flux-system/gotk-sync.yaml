@@ -11,7 +11,7 @@ spec:
     branch: master
   secretRef:
     name: flux-system
-  url: ssh://git@git.k8s.internal.nether:10022/k8s/flux.git
+  url: ssh://git@forge.internal.yannis.codes:2222/smspl/infrastructure.git
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -19,8 +19,8 @@ metadata:
   name: flux-system
   namespace: flux-system
 spec:
-  interval: 10m0s
-  path: ./clusters/cluster.internal.pve
+  interval: 5m0s
+  path: ./flux
   prune: true
   sourceRef:
     kind: GitRepository
