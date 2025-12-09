@@ -26,5 +26,4 @@ spec:
     kind: HelmChart
     name: cert-manager-csi-driver
     namespace: cert-manager
-  values:
 
