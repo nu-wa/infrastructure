@@ -84,26 +84,6 @@ spec:
       enabled: true
       rbac:
         create: true
-    certificates:
-      enabled: true
-      clusterIssuer: "le-prod"
-      proxy:
-        enabled: true
-        commonName: "yannis.codes"
-        dnsNames:
-          - "*.yannis.codes"
-      admin:
-        enabled: true
-        commonName: "kong-manager.yannis.codes"
-        dnsNames:
-          - "kong-manager.yannis.codes"
-      portal:
-        enabled: false
-        commonName: "kong-portal.yannis.codes"
-        dnsNames:
-          - "kong-portal.yannis.codes"
-      cluster:
-        enabled: false
     admin:
       enabled: true
       annotations:
@@ -111,7 +91,7 @@ spec:
       ingress:
         enabled: true
         ingressClassName: kong
-        tls: kong-admin-yannis-codes
+        tls: yannis-codes
         hostname: kong-admin.yannis.codes
         annotations:
           cert-manager.io/cluster-issuer: "le-prod"
@@ -125,7 +105,7 @@ spec:
       ingress:
         enabled: true
         ingressClassName: kong
-        tls: kong-manager-yannis-codes
+        tls: yannis-codes
         hostname: kong-manager.yannis.codes
         annotations:
           cert-manager.io/cluster-issuer: "le-prod"
@@ -133,13 +113,5 @@ spec:
           konghq.com/protocols: "https"
           konghq.com/protocol: "https"
     certificates:
-      enabled: true
-      clusterIssuer: "le-prod"
-      proxy:
-        clusterIssuer: "le-prod"
-        commonName: "yannis.codes"
-        dnsNames:
-          - *.yannis.codes
-          - *.kys.dog
-          - kys.dog
+      enabled: false
 
