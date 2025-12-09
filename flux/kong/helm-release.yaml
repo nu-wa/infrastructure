@@ -28,7 +28,7 @@ spec:
   values:
     env:
       admin_gui_url: "https://kong-manager.yannis.codes"
-      database: "kong"
+      database: "postgres"
       pg_host: "global-pg-rw.tools.svc.cluster.local"
       log_level: "debug"
       pg_database: "kong"

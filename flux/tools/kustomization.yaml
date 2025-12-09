@@ -3,6 +3,8 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
 
+  - ./cloudnative-pg/cluster.yaml
+  - ./cloudnative-pg/databases.yaml
   - ./cloudnative-pg/helm-repository.yaml
   - ./cloudnative-pg/operator/helm-release.yaml
 
