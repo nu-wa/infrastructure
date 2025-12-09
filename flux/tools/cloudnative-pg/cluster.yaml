@@ -13,18 +13,12 @@ spec:
 
   storage:
     size: 128Gi
-    pvcTemplate:
-      metadata:
-        name: global-pg
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 128Gi
-      storageClassName: longhorn
+    storageClass: longhorn
+
   walStorage:
-    storageClassName: longhorn
     size: 25Gi
+    storageClass: longhorn
+
   managed:
     roles:
       - name: pgsql-authentik
@@ -47,4 +41,3 @@ spec:
         login: true
         passwordSecret:
           name: pgsql-gitlab
-
