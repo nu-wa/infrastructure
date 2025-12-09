@@ -5,7 +5,6 @@ resources:
 
   - ./cloudnative-pg/helm-repository.yaml
   - ./cloudnative-pg/operator/helm-release.yaml
-  - ./cloudnative-pg/cluster/helm-release.yaml
 
   - ./reflector/helm-release.yaml
   - ./reflector/helm-repo.yaml
