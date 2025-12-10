@@ -8,7 +8,7 @@ metadata:
 spec:
   interval: 1m0s
   ref:
-    branch: master
+    branch: main
   secretRef:
     name: flux-system
   url: ssh://git@forge.internal.yannis.codes:2222/smspl/infrastructure.git
@@ -19,7 +19,7 @@ metadata:
   name: flux-system
   namespace: flux-system
 spec:
-  interval: 5m0s
+  interval: 10m0s
   path: ./flux
   prune: true
   sourceRef:
