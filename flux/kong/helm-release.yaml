@@ -21,9 +21,14 @@ metadata:
   namespace: kong
 spec:
   interval: 1m0s
-  chartRef:
-    kind: HelmChart
-    name: kong
+  chart:
+    spec:
+      chart: kong
+      version: "3.0.1"
+      sourceRef:
+        kind: HelmRepository
+        name: kong-repository
+      interval: 10m
   values:
     env:
       database: "postgres"
