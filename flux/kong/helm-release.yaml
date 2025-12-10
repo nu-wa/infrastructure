@@ -28,6 +28,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: kong-repository
+        namespace: kong
       interval: 10m
   values:
     env:
