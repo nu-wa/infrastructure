@@ -11,7 +11,7 @@ spec:
   sourceRef:
     kind: HelmRepository
     name: mailu-repository
-  version: "2.1.2"
+  version: "2.6.1"
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -31,9 +31,9 @@ spec:
       storageClass: "longhorn"
       database:
         roundcube:
+          database: "roundcube"
           username: "mailu"
-          existingSecret: "mailu-secrets"
-          existingSecretPasswordKey: "postgres-user-password"
+          existingSecret: "pgsql-mailu"
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -44,6 +44,12 @@ spec:
                   values:
                     - worker
     logLevel: DEBUG
+    externalDatabase:
+      enabled: true
+      host: "global-pg-rw.tools.svc.cluster.local"
+      database: "mailu"
+      type: "postgresql"
+      existingSecret: "pgsql-mailu"
     hostnames:
       - yannis.codes
       - kys.dog
@@ -68,21 +74,7 @@ spec:
     persistence:
       single_pvc: false
     postgresql:
-      enabled: true
-      architecture: standalone
-      auth:
-        existingSecret: "mailu-secrets"
-        secretKeys:
-          adminPasswordKey: "postgres-admin-password"
-          userPasswordKey: "postgres-user-password"
-          replicationPasswordKey: "postgres-replication-password" # Not used but set for posterity
-      primary:
-        persistence:
-          enabled: true
-          storageClass: "longhorn"
-          size: 32Gi
-          existingClaim: "mailu-postgresql"
-          claimNameOverride: "mailu-postgresql"
+      enabled: false
     ingress:
       enabled: false
       existingSecret: "mailu-certificates"

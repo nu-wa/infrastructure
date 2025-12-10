@@ -74,7 +74,7 @@ spec:
           readOnly: true
     authentik:
       postgresql:
-        host: global-pg-rw.tools.svc.cluster.local
+        host: "global-pg-rw.tools.svc.cluster.local"
         user: file:///postgres-creds/username
         name: authentik
         password: file:///postgres-creds/password
