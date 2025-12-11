@@ -27,7 +27,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: mailu-front
+                name: mailu-mailu-front
                 port:
                   number: 443
 
