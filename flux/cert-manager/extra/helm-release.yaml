@@ -39,6 +39,7 @@ spec:
         namespace: cert-manager
         kind: ClusterIssuer
         ovhEndpointName: ovh-eu
+        ovhAuthenticationMethod: application
         acmeServerUrl: https://acme-v02.api.letsencrypt.org/directory
         ovhAuthenticationRef:
           applicationKeyRef:
@@ -56,6 +57,7 @@ spec:
         email: nuwa@yannis.codes
         namespace: cert-manager
         ovhEndpointName: ovh-eu
+        ovhAuthenticationMethod: application
         acmeServerUrl: https://acme-staging-v02.api.letsencrypt.org/directory
         ovhAuthenticationRef:
           applicationKeyRef:
