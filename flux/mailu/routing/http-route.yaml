@@ -29,5 +29,5 @@ spec:
               service:
                 name: mailu-mailu-front
                 port:
-                  number: 80
+                  number: 443
 
