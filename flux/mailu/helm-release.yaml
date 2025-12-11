@@ -77,7 +77,7 @@ spec:
       enabled: false
     ingress:
       enabled: false
-      existingSecret: "mailu-certificates"
+      existingSecret: "mailu-certs"
       ingressClassName: "kong"
       annotations:
         cert-manager.io/cluster-issuer: "le-prod"
