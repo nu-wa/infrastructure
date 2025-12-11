@@ -27,10 +27,11 @@ spec:
     name: cert-manager-webhook-ovh
     namespace: cert-manager
   values:
-    configVersion: "0.0.1"
+    configVersion: "0.0.2"
     groupName: cluster.internal.nether
     certManager:
       namespace: cert-manager
+      serviceAccountName: cert-manager-cert-manager
     issuers:
       - name: le-prod
         create: true
@@ -43,7 +44,7 @@ spec:
           applicationKeyRef:
             name: ovh-credentials
             key: OVH_APPLICATION_KEY
-          consumerKeyRef:
+          applicationConsumerKeyRef:
             name: ovh-credentials
             key: OVH_CONSUMER_KEY
           applicationSecretRef:
@@ -60,7 +61,7 @@ spec:
           applicationKeyRef:
             name: ovh-credentials
             key: OVH_APPLICATION_KEY
-          consumerKeyRef:
+          applicationConsumerKeyRef:
             name: ovh-credentials
             key: OVH_CONSUMER_KEY
           applicationSecretRef:
