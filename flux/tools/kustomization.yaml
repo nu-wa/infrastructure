@@ -10,10 +10,3 @@ resources:
 
   - ./reflector/helm-release.yaml
   - ./reflector/helm-repo.yaml
-
-  - ./discord-mc-whitelister/deployment.yaml
-  - ./discord-mc-whitelister/persistent-volume.yaml
-  - ./discord-mc-whitelister/persistent-volume-claim.yaml
-  - ./discord-mc-whitelister/flux-image/image-policy.yaml
-  - ./discord-mc-whitelister/flux-image/image-repository.yaml
-  - ./discord-mc-whitelister/flux-image/image-update-automation.yaml
