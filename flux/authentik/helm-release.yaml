@@ -37,6 +37,12 @@ spec:
                     operator: In
                     values:
                       - worker
+      env:
+        - name: AUTHENTIK_DEFAULT_USER_CHANGE_USERNAME
+          value: "true"
+      envFrom:
+        - secretRef:
+            name: "authentik-secrets"
     server:
       ingress:
         enabled: true
