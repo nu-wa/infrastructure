@@ -35,7 +35,7 @@ spec:
             path: /usr/share/zoneinfo/Europe/Paris
       containers:
         - name: fizzy-container
-          image: ghcr.io/basecamp/fizzy:sha256-2e51e12c9083147c02d9115c3ef1747f9d9383e2365aad8af5bb56810ba86b61 # {"$imagepolicy": "tools:fizzy"}
+          image: ghcr.io/basecamp/fizzy:main
           imagePullPolicy: Always
           ports:
             - name: htto
