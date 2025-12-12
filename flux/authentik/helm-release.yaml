@@ -37,12 +37,6 @@ spec:
                     operator: In
                     values:
                       - worker
-      env:
-        - name: AUTHENTIK_DEFAULT_USER_CHANGE_USERNAME
-          value: "true"
-      envFrom:
-        - secretRef:
-            name: "authentik-secrets"
     server:
       ingress:
         enabled: true
@@ -73,6 +67,12 @@ spec:
           mountPath: /postgres-creds
           readOnly: true
     authentik:
+      env:
+        - name: AUTHENTIK_DEFAULT_USER_CHANGE_USERNAME
+          value: "true"
+      envFrom:
+        - secretRef:
+            name: "authentik-secrets"
       postgresql:
         host: "global-pg-rw.tools.svc.cluster.local"
         user: file:///postgres-creds/username
