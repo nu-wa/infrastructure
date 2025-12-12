@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fizzy
+  namespace: tools
+  labels:
+    app: fizzy
+  annotations:
+    konghq.com/protocols: "https"
+    konghq.com/https-redirect-status-code: "301"
+spec:
+  ingressClassName: kong
+  tls:
+    - secretName: yannis-codes
+      hosts:
+        - fizzy.yannis.codes
+  rules:
+    - host: fizzy.yannis.codes
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fizzy
+                port:
+                  number: 80

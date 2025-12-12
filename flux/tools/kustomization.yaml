@@ -10,3 +10,7 @@ resources:
 
   - ./reflector/helm-release.yaml
   - ./reflector/helm-repo.yaml
+
+  - ./fizzy/service.yaml
+  - ./fizzy/deployment.yaml
+  - ./fizzy/http-route.yaml

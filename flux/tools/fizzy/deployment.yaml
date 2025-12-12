@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fizzy
+  namespace: tools
+  labels:
+    app: fizzy
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: fizzy
+  template:
+    metadata:
+      labels:
+        app: fizzy
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: usage
+                    operator: In
+                    values:
+                      - worker
+      volumes:
+        - name: fizzy-data
+          persistentVolumeClaim:
+            claimName: fizzy
+        - name: tz-config
+          hostPath:
+            path: /usr/share/zoneinfo/Europe/Paris
+      containers:
+        - name: fizzy-container
+          image: ghcr.io/basecamp/fizzy:sha256-2e51e12c9083147c02d9115c3ef1747f9d9383e2365aad8af5bb56810ba86b61 # {"$imagepolicy": "tools:fizzy"}
+          imagePullPolicy: Always
+          ports:
+            - name: htto
+              containerPort: 80
+          volumeMounts:
+            - name: fizzy-data
+              mountPath: /rails/storage
+            - name: tz-config
+              mountPath: /etc/localtime
+          envFrom:
+            - secretRef:
+                name: fizzy-secrets
