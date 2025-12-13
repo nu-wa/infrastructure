@@ -42,7 +42,8 @@ spec:
               mountPath: /rails/storage
       containers:
         - name: fizzy-container
-          image: ghcr.io/basecamp/fizzy:main
+          # image: ghcr.io/basecamp/fizzy:main
+          image: harbor.internal.yannis.codes/registry/fizzy:latest
           imagePullPolicy: Always
           ports:
             - name: htto
