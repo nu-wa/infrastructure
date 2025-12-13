@@ -11,6 +11,7 @@ spec:
   dnsNames:
     - 'yannis.codes'
     - 'mail.yannis.codes'
+    - 'mail.internal.yannis.codes'
     - 'kys.dog'
   issuerRef:
     name: le-prod

@@ -52,6 +52,8 @@ spec:
       existingSecret: "pgsql-mailu"
     hostnames:
       - yannis.codes
+      - mail.yannis.codes
+      - mail.internal.yannis.codes
       - kys.dog
     domain: yannis.codes
     existingSecret: "mailu-secrets"
