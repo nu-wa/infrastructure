@@ -9,4 +9,5 @@ resources:
 
   - ./extensions/helm-release.yaml
   - ./certs/yannis.codes.yaml
+  - ./certs/kys.dog.yaml
 
