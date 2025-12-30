@@ -32,8 +32,6 @@ spec:
       interval: 10m
   values:
     env:
-      stream_listen: "0.0.0.0:443 ssl reuseport"
-      proxy_listen: "0.0.0.0:80 reuseport, 0.0.0.0:443 reuseport"
       database: "postgres"
       pg_host: "global-pg-rw.tools.svc.cluster.local"
       log_level: "debug"
@@ -67,12 +65,14 @@ spec:
     podLabels:
       app.kubernetes.io/part-of: kong
       mtls/name: kong-proxy
-    stream:
-      enabled: true
     proxy:
       enabled: true
+      nameOverride: kong
       loadBalancerIP: 10.15.25.100
       externalTrafficPolicy: Local
+      tls:
+        parameters:
+          - reuseport
       stream:
         - containerPort: 10022
           servicePort: 10022
@@ -80,6 +80,9 @@ spec:
         - port: 443
           targetPort: 443
           protocol: TCP
+          parameters:
+            - ssl
+            - reuseport
       labels:
         app.kubernetes.io/part-of: kong
         app.kubernetes.io/component: proxy
