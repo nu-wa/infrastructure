@@ -32,8 +32,7 @@ spec:
       interval: 10m
   values:
     env:
-      proxy_listen: "0.0.0.0:80 reuseport, 0.0.0.0:443 reuseport"
-      stream_listen: "0.0.0.0:443 ssl reuseport, 0.0.0.0:10022 reuseport"
+      stream_listen: "0.0.0.0:10443 ssl, 0.0.0.0:10022"
       database: "postgres"
       pg_host: "global-pg-rw.tools.svc.cluster.local"
       log_level: "debug"
@@ -72,12 +71,6 @@ spec:
       nameOverride: kong
       loadBalancerIP: 10.15.25.100
       externalTrafficPolicy: Local
-      tls:
-        enabled: false
-      stream:
-        - containerPort: 10022
-          servicePort: 10022
-          protocol: TCP
       labels:
         app.kubernetes.io/part-of: kong
         app.kubernetes.io/component: proxy
@@ -93,4 +86,27 @@ spec:
         create: true
     certificates:
       enabled: false
+    extraResources:
+      - apiVersion: v1
+        kind: Service
+        metadata:
+          name: kong-proxy-passthrough
+          namespace: kong
+        spec:
+          type: LoadBalancer
+          loadBalancerIP: 10.15.25.101
+          externalTrafficPolicy: Local
+          selector:
+            app.kubernetes.io/instance: kong
+            app.kubernetes.io/component: app
+            app.kubernetes.io/name: kong
+          ports:
+            - name: stream-443
+              port: 443
+              targetPort: 10443
+              protocol: TCP
+            - name: ssh-10022
+              port: 10022
+              targetPort: 10022
+              protocol: TCP
 
