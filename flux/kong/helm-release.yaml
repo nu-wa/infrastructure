@@ -77,8 +77,8 @@ spec:
         - containerPort: 10022
           servicePort: 10022
           protocol: TCP
-        - port: 443
-          targetPort: 443
+        - containerPort: 443
+          servicePort: 443
           protocol: TCP
           parameters:
             - ssl
