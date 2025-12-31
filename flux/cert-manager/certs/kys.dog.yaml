@@ -15,3 +15,6 @@ spec:
   issuerRef:
     name: le-prod
     kind: ClusterIssuer
+  privateKey:
+    algorithm: ECDSA
+    size: 384
