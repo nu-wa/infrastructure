@@ -13,6 +13,7 @@ spec:
     - 'mail.yannis.codes'
     - 'mail.internal.yannis.codes'
     - 'kys.dog'
+    - 'ksbh.rs'
   issuerRef:
     name: le-prod
     kind: ClusterIssuer
