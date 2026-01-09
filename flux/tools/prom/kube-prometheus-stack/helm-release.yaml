@@ -1,0 +1,106 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmchart-source-v1.json
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: kube-prometheus-stack
+  namespace: tools
+spec:
+  interval: 10m
+  chart: kube-prometheus-stack
+  sourceRef:
+    kind: HelmRepository
+    name: prometheus-community
+  version: "v0.30.0"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+    name: kube-prometheus-stack
+    namespace: tools
+spec:
+    interval: 1m0s
+    chartRef:
+      kind: HelmChart
+      name: kube-prometheus-stack
+      namespace: tools
+    install:
+        remediation:
+            retries: 100
+    values:
+      crds:
+        enabled: true
+      alertmanager:
+        enabled: true
+        ingress:
+          enabled: true
+          ingressClassName: "ksbh"
+          annotations:
+            ksbh.rs/modules: "oidc-authentik"
+            ksbh.rs/plugins: "http_to_https"
+          hosts:
+            - prom-am.kys.dog
+          tls:
+            - secretName: "kys-dog"
+              hosts:
+                - "prom-am.kys.dog"
+        alertmanagerSpec:  
+          storage:
+            volumeClaimTemplate:
+              spec:
+                storageClassName: longhorn
+                accessModes: ["ReadWriteOnce"]
+                resources:
+                  requests:
+                    storage: 24Gi
+          externalUrl: prom-am.kys.dog
+      grafana:
+        enabled: true
+        defaultDashboardsEnabled: true
+        operator:
+          dashboardsConfigMapRefEnabled: true
+        adminUser: admin
+        admin:
+          existingSecret: "grafana"
+        rbac:
+          pspEnabled: true
+        ingress:
+          enabled: true
+          ingressClassName: ksbh
+          annotations: {}
+            ksbh.rs/modules: "oidc-authentik"
+            ksbh.rs/plugins: "http_to_https"
+          hosts:
+            - prom-gr.kys.dog
+          tls: []
+            - secretName: kys-dog
+              hosts:
+                - prom-gr.kys.dog
+        persistence:
+          enabled: true
+          type: sts
+          storageClassName: "longhorn"
+          size: 24Gi
+      prometheusOperator:
+        enabled: true
+        ingress:
+          enabled: true
+          ingressClassName: ksbh
+          annotations: {}
+            ksbh.rs/modules: "oidc-authentik"
+            ksbh.rs/plugins: "http_to_https"
+          hosts:
+            - prom.kys.dog
+          tls: []
+            - secretName: kys-dog
+              hosts:
+                - prom.kys.dog
+        prometheusSpec:
+          storageSpec:
+            volumeClaimTemplate:
+              spec:
+                storageClassName: longhorn
+                resources:
+                  requests:
+                    storage: 24Gi

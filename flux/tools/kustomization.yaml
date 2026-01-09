@@ -14,3 +14,6 @@ resources:
   - ./fizzy/service.yaml
   - ./fizzy/deployment.yaml
   - ./fizzy/http-route.yaml
+
+  - ./prom/helm-repository.yaml
+  - ./prom/kube-prometheus-stack/helm-release.yaml
