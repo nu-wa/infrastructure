@@ -50,7 +50,6 @@ spec:
             volumeClaimTemplate:
               spec:
                 storageClassName: longhorn
-                accessModes: ["ReadWriteOnce"]
                 resources:
                   requests:
                     storage: 24Gi
@@ -68,12 +67,12 @@ spec:
         ingress:
           enabled: true
           ingressClassName: ksbh
-          annotations: {}
+          annotations:
             ksbh.rs/modules: "oidc-authentik"
             ksbh.rs/plugins: "http_to_https"
           hosts:
             - prom-gr.kys.dog
-          tls: []
+          tls:
             - secretName: kys-dog
               hosts:
                 - prom-gr.kys.dog
@@ -87,12 +86,12 @@ spec:
         ingress:
           enabled: true
           ingressClassName: ksbh
-          annotations: {}
+          annotations:
             ksbh.rs/modules: "oidc-authentik"
             ksbh.rs/plugins: "http_to_https"
           hosts:
             - prom.kys.dog
-          tls: []
+          tls:
             - secretName: kys-dog
               hosts:
                 - prom.kys.dog
