@@ -53,7 +53,7 @@ spec:
                 resources:
                   requests:
                     storage: 24Gi
-          externalUrl: prom-am.kys.dog
+          externalUrl: https://prom-am.kys.dog
       grafana:
         enabled: true
         defaultDashboardsEnabled: true
