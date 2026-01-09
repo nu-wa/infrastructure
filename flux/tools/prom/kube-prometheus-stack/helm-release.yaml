@@ -58,7 +58,7 @@ spec:
         enabled: true
         defaultDashboardsEnabled: true
         operator:
-          dashboardsConfigMapRefEnabled: true
+          dashboardsConfigMapRefEnabled: false
         adminUser: admin
         admin:
           existingSecret: "grafana"
