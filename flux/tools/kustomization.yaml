@@ -17,3 +17,6 @@ resources:
 
   - ./prom/helm-repository.yaml
   - ./prom/kube-prometheus-stack/helm-release.yaml
+
+  - ./pyroscope/helm-release.yaml
+  - ./pyroscope/helm-repository.yaml
