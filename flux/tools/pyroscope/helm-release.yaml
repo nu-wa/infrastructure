@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmchart-source-v1.json
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: pyroscope
+  namespace: tools
+spec:
+  interval: 10m
+  chart: pyroscope
+  sourceRef:
+    kind: HelmRepository
+    name: grafana
+  version: "1.17.0"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+    name: pyroscope
+    namespace: tools
+spec:
+    interval: 1m0s
+    chartRef:
+      kind: HelmChart
+      name: pyroscope
+      namespace: tools
+    install:
+        remediation:
+            retries: 100
+    values:
+      pyroscope:
+        persistence:
+          enabled: true
+          accessModes:
+            - ReadWriteOnce
+          size: 24Gi
+          existingClaim: pyroscope
+
