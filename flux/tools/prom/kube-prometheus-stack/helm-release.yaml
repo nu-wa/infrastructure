@@ -64,6 +64,9 @@ spec:
           existingSecret: "grafana"
         rbac:
           pspEnabled: true
+        grafana.ini:
+          server:
+            root_url: https://prom-gr.kys.dog
         ingress:
           enabled: true
           ingressClassName: ksbh
@@ -81,8 +84,7 @@ spec:
           type: sts
           storageClassName: "longhorn"
           size: 24Gi
-      prometheusOperator:
-        enabled: true
+      prometheus:
         ingress:
           enabled: true
           ingressClassName: ksbh
@@ -96,6 +98,7 @@ spec:
               hosts:
                 - prom.kys.dog
         prometheusSpec:
+          externalUrl: https://prom.kys.dog
           storageSpec:
             volumeClaimTemplate:
               spec:
