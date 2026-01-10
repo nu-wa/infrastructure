@@ -25,9 +25,6 @@ spec:
       kind: HelmChart
       name: pyroscope
       namespace: tools
-    install:
-        remediation:
-            retries: 100
     values:
       pyroscope:
         persistence:
