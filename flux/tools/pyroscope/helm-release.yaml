@@ -65,3 +65,15 @@ spec:
           name: alloy-config
         clustering:
           enabled: true
+    ingress:
+      enabled: true
+      className: "ksbh"
+      annotations:
+        ksbh.rs/modules: "oidc-authentik"
+      hosts:
+        - pyro.kys.dog
+      tls:
+        - secretName: "kys-dog"
+          hosts:
+            - "pyro.kys.dog"
+
