@@ -112,17 +112,19 @@ spec:
       tolerations:
         - operator: Exists
       volumes:
-        - name: bpffs
-          hostPath:
-            path: /sys/fs/bpf
-        - name: debugfs
-          hostPath:
-            path: /sys/kernel/debug
+        extra:
+          - name: bpffs
+            hostPath:
+              path: /sys/fs/bpf
+          - name: debugfs
+            hostPath:
+              path: /sys/kernel/debug
       volumeMounts:
-        - name: bpffs
-          mountPath: /sys/fs/bpf
-        - name: debugfs
-          mountPath: /sys/kernel/debug
+        extra:
+          - name: bpffs
+            mountPath: /sys/fs/bpf
+          - name: debugfs
+            mountPath: /sys/kernel/debug
     alloy:
       stabilityLevel: public-preview
       configMap:
@@ -148,5 +150,3 @@ spec:
       limits:
         cpu: 500m
         memory: 1Gi
-
-
