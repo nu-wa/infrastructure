@@ -1,0 +1,49 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmchart-source-v1.json
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: victoria-metrics-operator
+  namespace: victoria-metrics
+spec:
+  interval: 10m
+  chart: victoria-metrics-operator
+  sourceRef:
+    kind: HelmRepository
+    name: victoria-metrics
+  version: "0.57.1"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+    name: victoria-metrics-operator
+    namespace: victoria-metrics
+spec:
+    interval: 1m0s
+    chartRef:
+      kind: HelmChart
+      name: victoria-metrics-operator
+      namespace: victoria-metrics
+    values:
+      crds:
+        enabled: true
+        cleanup:
+          enabled: true
+        upgrade:
+          enabled: true
+          forceConflicts: true
+      operator:
+        enable_converter_ownership: true
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: usage
+                    operator: In
+                    values:
+                      - worker
+      serviceMonitor:
+        enabled: true
+        vm: true

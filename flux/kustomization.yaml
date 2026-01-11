@@ -7,3 +7,4 @@ resources:
   - ./mailu
   - ./tools
   - ./secrets-kustomization.yaml
+  - ./victoria-metrics
