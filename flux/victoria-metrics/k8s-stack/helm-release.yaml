@@ -25,8 +25,11 @@ spec:
       name: victoria-metrics-k8s-stack 
       namespace: victoria-metrics
     values:
-      victoria-metrics-k8s-stack :
+      victoria-metrics-operator:
         enabled: true
+        image:
+          repository: victoriametrics/operator
+          tag: "d11307a"
         crds:
           enabled: true
           cleanup:
@@ -125,6 +128,9 @@ spec:
                 implementation: prometheus
       grafana:
         enabled: true
+        image:
+          repository: grafana/grafana
+          tag: "12.2.1"
         forceDeployDatasource: true
         plugins:
           - victoriametrics-metrics-datasource
