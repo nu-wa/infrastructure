@@ -1,4 +1,3 @@
----
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
@@ -36,20 +35,44 @@ spec:
         upgrade:
           enabled: true
           forceConflicts: true
-      serviceMonitor:
-        enabled: false
       operator:
         disable_prometheus_converter: true
-    defaultDashboards:
-      enabled: true
-      defaultTimezone: utc
-      grafanaOperator:
+        service:
+          httpsPort: 9443
+        tls:
+          auto: true
+      serviceMonitor:
         enabled: false
-      dashboards:
-        victoriametrics-vmalert:
-          enabled: true
-        victoriametrics-operator:
-          enabled: true
+    grafana:
+      enabled: true
+      existingSecret: grafana
+      admin:
+        existingSecret: grafana
+        userKey: admin-user
+        passwordKey: admin-password
+      forceDeployDatasource: true
+      image:
+        repository: grafana/grafana
+        tag: "12.2.1"
+      ingress:
+        enabled: true
+        ingressClassName: ksbh
+        hosts:
+          - vm-gr.kys.dog
+        annotations:
+          ksbh.rs/modules: "oidc-authentik"
+        tls:
+          - hosts:
+            - vm-gr.kys.dog
+            secretName: kys-dog
+      persistence:
+        enabled: true
+        type: pvc
+        size: 32Gi
+        storageClassName: longhorn
+      plugins:
+        - victoriametrics-metrics-datasource
+        - victoriametrics-logs-datasource
     vmsingle:
       enabled: true
       service:
@@ -67,31 +90,15 @@ spec:
               storage: 64Gi
       ingress:
         enabled: true
-        annotations:
-          ksbh.rs/modules: "oidc-authentik"
+        ingressClassName: ksbh
         hosts:
           - vm.kys.dog
-        tls:
-          - secretName: "kys-dog"
-            hosts:
-              - "vm.kys.dog"
-        ingressClassName: "ksbh"
-    alertmanager:
-      enabled: true
-      service:
-        enabled: true
-        type: ClusterIP
-      ingress:
-        enabled: true
         annotations:
           ksbh.rs/modules: "oidc-authentik"
-        hosts:
-          - vm-am.kys.dog
         tls:
-          - secretName: "kys-dog"
-            hosts:
-              - "vm-am.kys.dog"
-        ingressClassName: "ksbh"
+          - hosts:
+            - vm.kys.dog
+            secretName: kys-dog
     vmalert:
       enabled: true
       service:
@@ -99,15 +106,15 @@ spec:
         type: ClusterIP
       ingress:
         enabled: true
-        annotations:
-          ksbh.rs/modules: "oidc-authentik"
+        ingressClassName: ksbh
         hosts:
           - vm-al.kys.dog
+        annotations:
+          ksbh.rs/modules: "oidc-authentik"
         tls:
-          - secretName: "kys-dog"
-            hosts:
-              - "vm-al.kys.dog"
-        ingressClassName: "ksbh"
+          - hosts:
+            - vm-al.kys.dog
+            secretName: kys-dog
     vmagent:
       enabled: true
       service:
@@ -115,15 +122,15 @@ spec:
         type: ClusterIP
       ingress:
         enabled: true
-        annotations:
-          ksbh.rs/modules: "oidc-authentik"
+        ingressClassName: ksbh
         hosts:
           - vm-ag.kys.dog
+        annotations:
+          ksbh.rs/modules: "oidc-authentik"
         tls:
-          - secretName: "kys-dog"
-            hosts:
-              - "vm-ag.kys.dog"
-        ingressClassName: "ksbh"
+          - hosts:
+            - vm-ag.kys.dog
+            secretName: kys-dog
       extraScrapeConfigs:
         - job_name: 'k8s-services'
           kubernetes_sd_configs:
@@ -137,9 +144,23 @@ spec:
             - source_labels: [__meta_kubernetes_endpoint_address_target_name, __meta_kubernetes_endpoint_port_name]
               separator: ":"
               target_label: instance
+    alertmanager:
+      enabled: true
+      service:
+        enabled: true
+        type: ClusterIP
+      ingress:
+        enabled: true
+        ingressClassName: ksbh
+        hosts:
+          - vm-am.kys.dog
+        annotations:
+          ksbh.rs/modules: "oidc-authentik"
+        tls:
+          - hosts:
+            - vm-am.kys.dog
+            secretName: kys-dog
     defaultDatasources:
-      grafanaOperator:
-        enabled: false
       victoriametrics:
         perReplica: true
       alertmanager:
@@ -149,36 +170,8 @@ spec:
             access: proxy
             jsonData:
               implementation: prometheus
-    grafana:
-      enabled: true
-      image:
-        repository: grafana/grafana
-        tag: "12.2.1"
-      existingSecret: grafana
-      admin:
-        existingSecret: grafana
-        userKey: admin-user
-        passwordKey: admin-password
-      forceDeployDatasource: true
-      plugins:
-        - victoriametrics-metrics-datasource
-        - victoriametrics-logs-datasource
-      ingress:
-        enabled: true
-        annotations:
-          ksbh.rs/modules: "oidc-authentik"
-        hosts:
-          - vm-gr.kys.dog
-        tls:
-          - secretName: "kys-dog"
-            hosts:
-              - "vm-gr.kys.dog"
-        ingressClassName: "ksbh"
-      persistence:
-        type: pvc
-        enabled: true
-        storageClassName: longhorn
-        size: 32Gi
+      grafanaOperator:
+        enabled: false
     defaultScrapeService:
       namespace: kube-system
     prometheus-node-exporter:
