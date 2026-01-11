@@ -1,3 +1,4 @@
+---
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
@@ -51,6 +52,9 @@ spec:
           enabled: true
     vmsingle:
       enabled: true
+      service:
+        enabled: true
+        type: ClusterIP
       spec:
         port: "8428"
         retentionPeriod: "1"
@@ -74,6 +78,9 @@ spec:
         ingressClassName: "ksbh"
     alertmanager:
       enabled: true
+      service:
+        enabled: true
+        type: ClusterIP
       ingress:
         enabled: true
         annotations:
@@ -87,6 +94,9 @@ spec:
         ingressClassName: "ksbh"
     vmalert:
       enabled: true
+      service:
+        enabled: true
+        type: ClusterIP
       ingress:
         enabled: true
         annotations:
@@ -100,6 +110,9 @@ spec:
         ingressClassName: "ksbh"
     vmagent:
       enabled: true
+      service:
+        enabled: true
+        type: ClusterIP
       ingress:
         enabled: true
         annotations:
@@ -141,6 +154,11 @@ spec:
       image:
         repository: grafana/grafana
         tag: "12.2.1"
+      existingSecret: grafana
+      admin:
+        existingSecret: grafana
+        userKey: admin-user
+        passwordKey: admin-password
       forceDeployDatasource: true
       plugins:
         - victoriametrics-metrics-datasource
@@ -159,7 +177,7 @@ spec:
       persistence:
         type: pvc
         enabled: true
-        storageClassName: "longhorn"
+        storageClassName: longhorn
         size: 32Gi
     defaultScrapeService:
       namespace: kube-system
