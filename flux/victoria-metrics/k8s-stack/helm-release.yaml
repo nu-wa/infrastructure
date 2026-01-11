@@ -2,176 +2,201 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
-  name: victoria-metrics-k8s-stack 
+  name: victoria-metrics-operator-crds
   namespace: victoria-metrics
 spec:
   interval: 10m
-  chart: victoria-metrics-k8s-stack 
+  chart: victoria-metrics-operator-crds
+  sourceRef:
+    kind: HelmRepository
+    name: victoria-metrics
+  version: "0.57.1"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: victoria-metrics-operator-crds
+  namespace: victoria-metrics
+spec:
+  interval: 1h
+  chartRef:
+    kind: HelmChart
+    name: victoria-metrics-operator-crds
+    namespace: victoria-metrics
+  values:
+    crds:
+      enabled: true
+      plain: true
+      upgrade:
+        enabled: true
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: victoria-metrics-k8s-stack
+  namespace: victoria-metrics
+spec:
+  interval: 10m
+  chart: victoria-metrics-k8s-stack
   sourceRef:
     kind: HelmRepository
     name: victoria-metrics
   version: "0.67.0"
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-    name: victoria-metrics-k8s-stack 
-    namespace: victoria-metrics
+  name: victoria-metrics-k8s-stack
+  namespace: victoria-metrics
 spec:
-    interval: 1m0s
-    chartRef:
-      kind: HelmChart
-      name: victoria-metrics-k8s-stack 
-      namespace: victoria-metrics
-    values:
-      victoria-metrics-operator:
+  interval: 1m0s
+  chartRef:
+    kind: HelmChart
+    name: victoria-metrics-k8s-stack
+    namespace: victoria-metrics
+  values:
+    victoria-metrics-operator:
+      enabled: true
+      image:
+        repository: victoriametrics/operator
+        tag: "v0.66.1"
+      crds:
+        enabled: false
+      serviceMonitor:
         enabled: true
-        image:
-          repository: victoriametrics/operator
-          tag: "v0.66.1"
-        crds:
+        vm: true
+      operator:
+        disable_prometheus_converter: false
+    defaultDashboards:
+      enabled: true
+      defaultTimezone: utc
+      grafanaOperator:
+        enabled: false
+      dashboards:
+        victoriametrics-vmalert:
           enabled: true
-          cleanup:
-            enabled: true
-          upgrade:
-            enabled: true
-            forceConflicts: true
-        serviceMonitor:
+        victoriametrics-operator:
           enabled: true
-          vm: true
-        operator:
-          disable_prometheus_converter: false
-      defaultDashboards:
+    vmsingle:
+      enabled: true
+      spec:
+        port: "8428"
+        retentionPeriod: "1"
+        storage:
+          storageClassName: longhorn
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 64Gi
+      ingress:
         enabled: true
-        defaultTimezone: utc
-        grafanaOperator:
-          enabled: false
-        dashboards:
-          victoriametrics-vmalert:
-            enabled: true
-          victoriametrics-operator:
-            enabled: true
-      vmsingle:
+        annotations:
+          ksbh.rs/modules: "oidc-authentik"
+        hosts:
+          - vm.kys.dog
+        tls:
+          - secretName: "kys-dog"
+            hosts:
+              - "vm.kys.dog"
+        ingressClassName: "ksbh"
+    alertmanager:
+      enabled: true
+      ingress:
         enabled: true
-        spec:
-          port: "8428"
-          retentionPeriod: "1"
-          storage:
-            storageClassName: longhorn
-            accessModes:
-              - ReadWriteOnce
-            resources:
-              requests:
-                storage: 64Gi
-        ingress:
-          enabled: true
-          annotations:
-            ksbh.rs/modules: "oidc-authentik"
-          hosts:
-            - vm.kys.dog
-          tls:
-            - secretName: "kys-dog"
-              hosts:
-                - "vm.kys.dog"
-          ingressClassName: "ksbh"
+        annotations:
+          ksbh.rs/modules: "oidc-authentik"
+        hosts:
+          - vm-am.kys.dog
+        tls:
+          - secretName: "kys-dog"
+            hosts:
+              - "vm-am.kys.dog"
+        ingressClassName: "ksbh"
+    vmalert:
+      enabled: true
+      ingress:
+        enabled: true
+        annotations:
+          ksbh.rs/modules: "oidc-authentik"
+        hosts:
+          - vm-al.kys.dog
+        tls:
+          - secretName: "kys-dog"
+            hosts:
+              - "vm-al.kys.dog"
+        ingressClassName: "ksbh"
+    vmagent:
+      enabled: true
+      ingress:
+        enabled: true
+        annotations:
+          ksbh.rs/modules: "oidc-authentik"
+        hosts:
+          - vm-ag.kys.dog
+        tls:
+          - secretName: "kys-dog"
+            hosts:
+              - "vm-ag.kys.dog"
+        ingressClassName: "ksbh"
+    defaultDatasources:
+      grafanaOperator:
+        enabled: false
+      victoriametrics:
+        perReplica: true
       alertmanager:
+        perReplica: true
+        datasources:
+          - name: Alertmanager
+            access: proxy
+            jsonData:
+              implementation: prometheus
+    grafana:
+      enabled: true
+      image:
+        repository: grafana/grafana
+        tag: "12.2.1"
+      forceDeployDatasource: true
+      plugins:
+        - victoriametrics-metrics-datasource
+        - victoriametrics-logs-datasource
+      ingress:
         enabled: true
-        ingress:
-          enabled: true
-          annotations:
-            ksbh.rs/modules: "oidc-authentik"
-          hosts:
-            - vm-am.kys.dog
-          tls:
-            - secretName: "kys-dog"
-              hosts:
-                - "vm-am.kys.dog"
-          ingressClassName: "ksbh"
-      vmalert:
+        annotations:
+          ksbh.rs/modules: "oidc-authentik"
+        hosts:
+          - vm-gr.kys.dog
+        tls:
+          - secretName: "kys-dog"
+            hosts:
+              - "vm-gr.kys.dog"
+        ingressClassName: "ksbh"
+      persistence:
+        type: pvc
         enabled: true
-        ingress:
-          enabled: true
-          annotations:
-            ksbh.rs/modules: "oidc-authentik"
-          hosts:
-            - vm-al.kys.dog
-          tls:
-            - secretName: "kys-dog"
-              hosts:
-                - "vm-al.kys.dog"
-          ingressClassName: "ksbh"
-      vmagent:
+        storageClassName: "longhorn"
+        size: 32Gi
+    defaultScrapeService:
+      namespace: kube-system
+    prometheus-node-exporter:
+      enabled: true
+      vmScrape:
         enabled: true
-        ingress:
-          enabled: true
-          annotations:
-            ksbh.rs/modules: "oidc-authentik"
-          hosts:
-            - vm-ag.kys.dog
-          tls:
-            - secretName: "kys-dog"
-              hosts:
-                - "vm-ag.kys.dog"
-          ingressClassName: "ksbh"
-      defaultDatasources:
-        grafanaOperator:
-          enabled: false
-        victoriametrics:
-          perReplica: true
-        alertmanager:
-          perReplica: true
-          datasources:
-            - name: Alertmanager
-              access: proxy
-              jsonData:
-                implementation: prometheus
-      grafana:
-        enabled: true
-        image:
-          repository: grafana/grafana
-          tag: "12.2.1"
-        forceDeployDatasource: true
-        plugins:
-          - victoriametrics-metrics-datasource
-          - victoriametrics-logs-datasource
-        ingress:
-          enabled: true
-          annotations:
-            ksbh.rs/modules: "oidc-authentik"
-          hosts:
-            - vm-gr.kys.dog
-          tls:
-            - secretName: "kys-dog"
-              hosts:
-                - "vm-gr.kys.dog"
-          ingressClassName: "ksbh"
-        persistence:
-          type: pvc
-          enabled: true
-          storageClassName: "longhorn"
-          size: 32Gi
-      defaultScrapeService:
-        namespace: kube-system
-      prometheus-node-exporter:
-        enabled: true
-        vmScrape:
-          enabled: true
-      kube-state-metrics:
-        enabled: true
-      kubelet:
-        enabled: true
-      kubeApiServer:
-        enabled: true
-      kubeControllerManager:
-        enabled: true
-      kubeDns:
-        enabled: false
-      coreDns:
-        enabled: true
-      kubeEtcd:
-        enabled: true
-      kubeScheduler:
-        enabled: true
-      kubeProxy:
-        enabled: false
+    kube-state-metrics:
+      enabled: true
+    kubelet:
+      enabled: true
+    kubeApiServer:
+      enabled: true
+    kubeControllerManager:
+      enabled: true
+    kubeDns:
+      enabled: false
+    coreDns:
+      enabled: true
+    kubeEtcd:
+      enabled: true
+    kubeScheduler:
+      enabled: true
+    kubeProxy:
+      enabled: false
