@@ -30,10 +30,7 @@ spec:
         image:
           repository: victoriametrics/operator
           tag: "d11307a"
-        configReloader:
-          image:
-            repository: victoriametrics/operator
-            tag: "config-reloader-v0.66.1"
+          variant: "config-reloader-v0.66.1"
         crds:
           enabled: true
           cleanup:
