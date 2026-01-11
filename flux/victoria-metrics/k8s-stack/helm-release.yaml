@@ -120,6 +120,8 @@ spec:
       service:
         enabled: true
         type: ClusterIP
+      extraArgs:
+        - -promscrape.dropOriginalLabels=false
       ingress:
         enabled: true
         ingressClassName: ksbh

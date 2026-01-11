@@ -15,5 +15,5 @@ resources:
   - ./fizzy/deployment.yaml
   - ./fizzy/http-route.yaml
 
-  - ./parca/agent.yaml
-  - ./parca/server.yaml
+  - ./pyroscope/helm-release.yaml
+  - ./pyroscope/helm-repository.yaml

@@ -1,5 +1,4 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmchart-source-v1.json
----
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
@@ -17,20 +16,72 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
+  name: pyroscope
+  namespace: tools
+spec:
+  interval: 1m0s
+  chartRef:
+    kind: HelmChart
     name: pyroscope
     namespace: tools
-spec:
-    interval: 1m0s
-    chartRef:
-      kind: HelmChart
-      name: pyroscope
-      namespace: tools
-    values:
-      pyroscope:
-        persistence:
-          enabled: true
-          accessModes:
-            - ReadWriteOnce
-          size: 24Gi
-          existingClaim: pyroscope-pvc
+  values:
+    pyroscope:
+      replicaCount: 1
+      persistence:
+        enabled: true
+        accessModes:
+          - ReadWriteOnce
+        size: 24Gi
+        existingClaim: pyroscope-pvc
+      structuredConfig:
+        discovery: |
+          kubernetes "all_pods" {
+            role = "pod"
+          }
+
+          relabel "filtered" {
+            targets = discovery.kubernetes.all_pods.targets
+
+            rule {
+              source_labels = ["__meta_kubernetes_pod_label_pyroscope_profiling"]
+              regex = "true"
+              action = "keep"
+            }
+
+            rule {
+              action = "drop"
+            }
+          }
+
+          pyroscope.ebpf "profile_selected" {
+            forward_to = [pyroscope.write.local.receiver]
+            targets    = discovery.relabel.filtered.output
+          }
+
+        write: |
+          pyroscope.write "local" {
+            endpoint {
+              url = "http://localhost:4040"
+            }
+          }
+      overwriteResources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 1024Mi
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: usage
+                    operator: In
+                    values:
+                      - worker
+      podSecurityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        fsGroup: 10001
 
