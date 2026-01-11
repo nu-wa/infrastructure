@@ -2,37 +2,6 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmChart
 metadata:
-  name: victoria-metrics-operator-crds
-  namespace: victoria-metrics
-spec:
-  interval: 10m
-  chart: victoria-metrics-operator-crds
-  sourceRef:
-    kind: HelmRepository
-    name: victoria-metrics
-  version: "0.5.1"
----
-apiVersion: helm.toolkit.fluxcd.io/v2
-kind: HelmRelease
-metadata:
-  name: victoria-metrics-operator-crds
-  namespace: victoria-metrics
-spec:
-  interval: 30m
-  chartRef:
-    kind: HelmChart
-    name: victoria-metrics-operator-crds
-    namespace: victoria-metrics
-  values:
-    crds:
-      enabled: true
-      plain: true
-      upgrade:
-        enabled: true
----
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmChart
-metadata:
   name: victoria-metrics-k8s-stack
   namespace: victoria-metrics
 spec:
@@ -61,8 +30,14 @@ spec:
         repository: victoriametrics/operator
         tag: "v0.66.1"
       crds:
+        enabled: true
+        cleanup:
+          enabled: true
+        upgrade:
+          enabled: true
+          forceConflicts: true
+      admissionWebhooks:
         enabled: false
-        plain: false
       serviceMonitor:
         enabled: true
         vm: true
@@ -141,8 +116,6 @@ spec:
               - "vm-ag.kys.dog"
         ingressClassName: "ksbh"
     defaultDatasources:
-      grafanaOperator:
-        enabled: false
       victoriametrics:
         perReplica: true
       alertmanager:
@@ -201,4 +174,3 @@ spec:
       enabled: true
     kubeProxy:
       enabled: false
-
