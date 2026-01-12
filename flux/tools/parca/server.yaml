@@ -1,4 +1,3 @@
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -11,11 +10,11 @@ metadata:
   namespace: tools
 data:
   parca.yaml: |-
-    "object_storage":
-      "bucket":
-        "config":
-          "directory": "/var/lib/parca"
-        "type": "FILESYSTEM"
+    object_storage:
+      bucket:
+        config:
+          directory: "/var/lib/parca"
+        type: "FILESYSTEM"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -57,10 +56,12 @@ spec:
         - --http-address=:7070
         - --config-path=/etc/parca/parca.yaml
         - --log-level=warn
-        - --storage-active-memory=340000000
+        - --storage-active-memory=536870912
         - --storage-row-group-size=16384
+        - --grpc-server-max-recv-msg-size=536870912
+        - --grpc-server-max-send-msg-size=536870912
         - --debuginfod-upstream-servers=debuginfod.systemtap.org
-        - --debuginfod-http-request-timeout=2m
+        - --debuginfod-http-request-timeout=300s
         image: ghcr.io/parca-dev/parca:v0.25.0
         name: parca
         ports:
@@ -68,11 +69,11 @@ spec:
           name: http
         resources:
           requests:
-            cpu: 100m
-            memory: 256Mi
+            cpu: 250m
+            memory: 1Gi
           limits:
-            cpu: 400m
-            memory: 512Mi
+            cpu: "2"
+            memory: 4Gi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
