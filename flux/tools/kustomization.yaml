@@ -17,3 +17,4 @@ resources:
 
   - ./parca/agent.yaml
   - ./parca/server.yaml
+  - ./parca/agent-config.yaml
