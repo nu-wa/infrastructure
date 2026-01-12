@@ -87,11 +87,11 @@ spec:
             add: ["SYS_ADMIN"]
         resources:
           requests:
-            cpu: 50m
-            memory: 64Mi
+            cpu: 100m
+            memory: 512Mi
           limits:
-            cpu: 200m
-            memory: 128Mi
+            cpu: 400m
+            memory: 1Gi
         volumeMounts:
         - mountPath: /run
           name: run
