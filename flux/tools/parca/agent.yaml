@@ -76,12 +76,14 @@ spec:
         - --profiling-cpu-sampling-frequency=11
         - --debuginfo-strip=true
         - --debuginfo-upload-max-parallel=1
-        - --no-kernel-version-check
+        - --force-kernel-checks=false
         env:
         - name: NODE_NAME
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+        - name: PARCA_AGENT_SKIP_KERNEL_VERSION_CHECK
+          value: "true"
         securityContext:
           privileged: true
           capabilities:
