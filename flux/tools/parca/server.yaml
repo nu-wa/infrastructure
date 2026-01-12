@@ -60,8 +60,10 @@ spec:
         - --log-level=warn
         - --storage-active-memory=1073741824
         - --storage-row-group-size=16384
+        - --debuginfo-upload-max-size=3000000000
+        - --debuginfo-upload-max-duration=30m
         - --debuginfod-upstream-servers=debuginfod.systemtap.org
-        - --debuginfod-http-request-timeout=300s
+        - --debuginfod-http-request-timeout=10m
         image: ghcr.io/parca-dev/parca:v0.25.0
         name: parca
         ports:
