@@ -28,8 +28,6 @@ metadata:
   namespace: tools
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/component: observability
@@ -57,11 +55,14 @@ spec:
         - /parca
         - --http-address=:7070
         - --config-path=/etc/parca/parca.yaml
-        - --log-level=warn
-        - --storage-active-memory=1073741824
-        - --storage-row-group-size=16384
-        - --debuginfo-upload-max-size=3000000000
-        - --debuginfo-upload-max-duration=30m
+        - --log-level=debug
+        - --enable-persistence
+        - --storage-active-memory=2147483648
+        - --storage-row-group-size=32768
+        - --storage-enable-wal
+        - --storage-index-on-disk
+        - --debuginfo-upload-max-size=5000000000
+        - --debuginfo-upload-max-duration=1h
         - --debuginfod-upstream-servers=debuginfod.systemtap.org
         - --debuginfod-http-request-timeout=10m
         image: ghcr.io/parca-dev/parca:v0.25.0
@@ -71,11 +72,11 @@ spec:
           name: http
         resources:
           requests:
-            cpu: 500m
-            memory: 1Gi
+            cpu: 1
+            memory: 2Gi
           limits:
-            cpu: "4"
-            memory: 4Gi
+            cpu: "8"
+            memory: 8Gi
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -125,4 +126,3 @@ kind: ServiceAccount
 metadata:
   name: parca
   namespace: tools
-
