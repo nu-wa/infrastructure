@@ -28,6 +28,8 @@ metadata:
   namespace: tools
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/component: observability
@@ -56,10 +58,8 @@ spec:
         - --http-address=:7070
         - --config-path=/etc/parca/parca.yaml
         - --log-level=warn
-        - --storage-active-memory=536870912
+        - --storage-active-memory=1073741824
         - --storage-row-group-size=16384
-        - --grpc-server-max-recv-msg-size=536870912
-        - --grpc-server-max-send-msg-size=536870912
         - --debuginfod-upstream-servers=debuginfod.systemtap.org
         - --debuginfod-http-request-timeout=300s
         image: ghcr.io/parca-dev/parca:v0.25.0
@@ -69,10 +69,10 @@ spec:
           name: http
         resources:
           requests:
-            cpu: 250m
+            cpu: 500m
             memory: 1Gi
           limits:
-            cpu: "2"
+            cpu: "4"
             memory: 4Gi
         securityContext:
           allowPrivilegeEscalation: false
@@ -123,3 +123,4 @@ kind: ServiceAccount
 metadata:
   name: parca
   namespace: tools
+
