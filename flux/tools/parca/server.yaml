@@ -57,7 +57,7 @@ spec:
         - --http-address=:7070
         - --config-path=/etc/parca/parca.yaml
         - --log-level=warn
-        - --storage-active-memory=256MB
+        - --storage-active-memory=340000000
         - --storage-row-group-size=16384
         - --debuginfod-upstream-servers=debuginfod.systemtap.org
         - --debuginfod-http-request-timeout=2m
