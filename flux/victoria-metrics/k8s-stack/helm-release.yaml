@@ -144,9 +144,11 @@ spec:
               regex: true
             - source_labels: [__meta_kubernetes_service_name]
               target_label: job
-            - source_labels: [__meta_kubernetes_endpoint_address_target_name, __meta_kubernetes_endpoint_port_name]
-              separator: ":"
-              target_label: instance
+            - source_labels: [__meta_kubernetes_endpoint_address]
+              target_label: __address__
+            - source_labels: [__meta_kubernetes_endpoint_port_name]
+              target_label: __metrics_path__
+              replacement: "/metrics"
     alertmanager:
       enabled: true
       service:
