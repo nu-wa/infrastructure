@@ -23,11 +23,14 @@ subjects:
   namespace: tools
 ---
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: parca-agent
+  namespace: tools
 data:
   parca-agent.yaml: |-
     relabel_configs:
-    - source_labels:
-      - "__meta_kubernetes_pod_label_parca_profiling"
+    - source_labels: ["__meta_kubernetes_pod_label_parca_profiling"]
       regex: "enabled"
       action: keep
     - source_labels: ["__meta_kubernetes_namespace"]
@@ -36,10 +39,6 @@ data:
       target_label: "pod"
     - source_labels: ["__meta_kubernetes_pod_container_name"]
       target_label: "container"
-kind: ConfigMap
-metadata:
-  name: parca-agent
-  namespace: tools
 ---
 apiVersion: apps/v1
 kind: DaemonSet
@@ -67,14 +66,14 @@ spec:
       hostPID: true
       serviceAccountName: parca-agent
       containers:
-      - args:
-        - --http-address=:7071
+      - name: parca-agent
+        image: ghcr.io/parca-dev/parca-agent:v0.44.2
+        args:
         - --node=$(NODE_NAME)
         - --config-path=/etc/parca-agent/parca-agent.yaml
         - --remote-store-address=parca.tools.svc.cluster.local:7070
         - --remote-store-insecure
         - --profiling-cpu-sampling-frequency=11
-        - --mem-limit=128M
         - --debuginfo-strip=true
         - --debuginfo-upload-max-parallel=1
         env:
@@ -82,22 +81,17 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
-        image: ghcr.io/parca-dev/parca-agent:v0.44.2
-        name: parca-agent
-        ports:
-        - containerPort: 7071
-          name: http
-        resources:
-          requests:
-            cpu: 40m
-            memory: 64Mi
-          limits:
-            cpu: 150m
-            memory: 128Mi
         securityContext:
           privileged: true
           capabilities:
             add: ["SYS_ADMIN"]
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
         volumeMounts:
         - mountPath: /run
           name: run
@@ -109,18 +103,18 @@ spec:
         - mountPath: /etc/parca-agent
           name: config
       volumes:
-      - hostPath:
-          path: /run
-        name: run
-      - hostPath:
-          path: /lib/modules
-        name: modules
-      - hostPath:
-          path: /sys/fs/bpf
-        name: bpffs
-      - configMap:
+      - name: config
+        configMap:
           name: parca-agent
-        name: config
+      - name: run
+        hostPath:
+          path: /run
+      - name: modules
+        hostPath:
+          path: /lib/modules
+      - name: bpffs
+        hostPath:
+          path: /sys/fs/bpf
 ---
 apiVersion: v1
 kind: ServiceAccount
