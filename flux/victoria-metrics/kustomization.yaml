@@ -5,3 +5,7 @@ resources:
   - ./helm-repository.yaml
 
   - ./k8s-stack/helm-release.yaml
+
+  - ./logs/helm-release.yaml
+
+  - ./collector/helm-release.yaml

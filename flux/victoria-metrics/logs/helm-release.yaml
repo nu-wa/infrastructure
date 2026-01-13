@@ -1,0 +1,75 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: victoria-logs-single
+  namespace: victoria-metrics
+spec:
+  interval: 10m
+  chart: victoria-logs-single
+  sourceRef:
+    kind: HelmRepository
+    name: victoria-metrics
+  version: "0.11.24"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: victoria-logs-single
+  namespace: victoria-metrics
+spec:
+  interval: 1m0s
+  chartRef:
+    kind: HelmChart
+    name: victoria-logs-single
+    namespace: victoria-metrics
+  values:
+    printNotes: true
+    serviceAccount:
+      create: true
+    server:
+      enabled: true
+      image:
+        repository: victoriametrics/victoria-logs
+        tag: "v1.43.1"
+      replicaCount: 1
+      retentionPeriod: 1m
+      retentionDiskSpaceUsage: "52Gi"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: usage
+                operator: In
+                values:
+                - worker
+      persistentVolume:
+        enabled: true
+        storageClassName: "longhorn"
+        existingClaim: "vm-logs-pvc"
+        size: 64Gi
+      ingress:
+        enabled: true
+        ingressClassName: ksbh
+        hosts:
+          - vm-logs.kys.dog
+        annotations:
+          ksbh.rs/modules: "oidc-authentik"
+        tls:
+          - hosts:
+            - vm-logs.kys.dog
+            secretName: kys-dog
+      service:
+        type: ClusterIP
+      mode: statefulSet
+      deployment:
+        spec:
+          strategy:
+            type: Recreate
+      serviceMonitor:
+        enabled: true
+    extraObjects: []
+    dashboards:
+      enabled: true
+      grafanaOperator:
+        enabled: false

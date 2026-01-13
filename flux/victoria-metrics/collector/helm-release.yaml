@@ -1,0 +1,52 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: victoria-logs-collector
+  namespace: victoria-metrics
+spec:
+  interval: 10m
+  chart: victoria-logs-collector
+  sourceRef:
+    kind: HelmRepository
+    name: victoria-metrics
+  version: "0.2.5"
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: victoria-logs-collector
+  namespace: victoria-metrics
+spec:
+  interval: 1m0s
+  chartRef:
+    kind: HelmChart
+    name: victoria-logs-collector
+    namespace: victoria-metrics
+  values:
+    image:
+        repository: victoriametrics/vlagent
+        tag: "v1.43.1"
+    remoteWrite:
+      - url: "http://victoria-logs.victoria-metrics.svc.cluster.local:9428"
+    collector:
+      timeField:
+        - time
+        - ts
+        - timestamp
+      msgField:
+        - message
+        - msg
+      excludeFilter: ""
+      includePodLabels: true
+      includePodAnnotations: false
+      includeNodeLabels: true
+      includeNodeAnnotations: false
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: usage
+              operator: In
+              values:
+              - worker
