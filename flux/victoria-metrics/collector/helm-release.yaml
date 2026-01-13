@@ -27,7 +27,7 @@ spec:
         repository: victoriametrics/vlagent
         tag: "v1.43.1"
     remoteWrite:
-      - url: "http://victoria-logs.victoria-metrics.svc.cluster.local:9428"
+      - url: "http://victoria-logs-single-server.victoria-metrics.svc.cluster.local:9428"
     collector:
       timeField:
         - time
