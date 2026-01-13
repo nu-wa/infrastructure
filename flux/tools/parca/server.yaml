@@ -57,7 +57,7 @@ spec:
         - /parca
         - --http-address=:7070
         - --config-path=/etc/parca/parca.yaml
-        - --log-level=debug
+        - --log-level=info
         - --enable-persistence
         - --storage-active-memory=2147483648
         - --storage-row-group-size=32768
