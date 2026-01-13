@@ -50,15 +50,15 @@ spec:
         size: 64Gi
       ingress:
         enabled: true
-        ingressClassName: ksbh
-        hosts:
-          - vm-logs.kys.dog
+        ingressClassName: "ksbh"
         annotations:
           ksbh.rs/modules: "oidc-authentik"
+        hosts:
+          - vm-logs.kys.dog
         tls:
-          - hosts:
-            - vm-logs.kys.dog
-            secretName: kys-dog
+          - secretName: kys-dog
+            hosts:
+              - "vm-logs.kys.dog"
       service:
         type: ClusterIP
       mode: statefulSet
