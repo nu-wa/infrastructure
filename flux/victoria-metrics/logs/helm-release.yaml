@@ -54,7 +54,7 @@ spec:
         annotations:
           ksbh.rs/modules: "oidc-authentik"
         hosts:
-          - host: "vm-logs.kys.dog"
+          - name: "vm-logs.kys.dog"
             path: "/"
         tls:
           - secretName: kys-dog
