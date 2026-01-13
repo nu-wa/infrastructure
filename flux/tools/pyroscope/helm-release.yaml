@@ -23,6 +23,8 @@ spec:
     name: pyroscope
     namespace: tools
   values:
+    alloy:
+      enabled: true
     pyroscope:
       replicaCount: 1
       persistence:
@@ -64,3 +66,4 @@ spec:
         - secretName: "kys-dog"
           hosts:
             - "pyro.kys.dog"
+
