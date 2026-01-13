@@ -32,7 +32,7 @@ spec:
         repository: victoriametrics/victoria-logs
         tag: "v1.43.1"
       replicaCount: 1
-      retentionPeriod: 1m
+      retentionPeriod: 90d
       retentionDiskSpaceUsage: ""
       extraArgs:
         retention.maxDiskSpaceUsageBytes: 55975581312 
