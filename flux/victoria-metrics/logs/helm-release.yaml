@@ -68,7 +68,7 @@ spec:
           strategy:
             type: Recreate
       serviceMonitor:
-        enabled: true
+        enabled: false
     extraObjects: []
     dashboards:
       enabled: true
