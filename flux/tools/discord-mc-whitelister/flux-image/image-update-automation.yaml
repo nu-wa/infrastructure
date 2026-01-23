@@ -25,9 +25,7 @@ spec:
             messageTemplate: |
                 Automated image update
                 
-                Automation name: {{ .AutomationObject }}
-                
-                Images updated:
-                {{ range .Changed.Images -}}
-                - {{ . }}
+                Changes:
+                {{ range .Changed.Changes -}}
+                - {{ .Target.File }}: {{ .OldValue }} -> {{ .NewValue }}
                 {{ end -}}
