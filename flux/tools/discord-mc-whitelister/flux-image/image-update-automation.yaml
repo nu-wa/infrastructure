@@ -24,20 +24,10 @@ spec:
                 name: fluxcdbot
             messageTemplate: |
                 Automated image update
-
+                
                 Automation name: {{ .AutomationObject }}
-
-                Files:
-                {{ range $filename, $_ := .Changed.Files -}}
-                - {{ $filename }}
-                {{ end -}}
-
-                Objects:
-                {{ range $resource, $_ := .Changed.Objects -}}
-                - {{ $resource.Kind }} {{ $resource.Name }}
-                {{ end -}}
-
-                Images:
+                
+                Images updated:
                 {{ range .Changed.Images -}}
-                - {{.}}
+                - {{ . }}
                 {{ end -}}
