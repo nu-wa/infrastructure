@@ -45,7 +45,7 @@ spec:
               mountPath: /app/data
       containers:
         - name: discord-bot
-          image: "harbor.internal.yannis.codes/registry/discord-bot-minecraft-whitelister:e1c534b-1769138933" # {"$imagepolicy": "tools:discord-bot-minecraft-whitelister"}
+          image: "harbor.internal.yannis.codes/registry/discord-bot-minecraft-whitelister:423330e-1769181649" # {"$imagepolicy": "tools:discord-bot-minecraft-whitelister"}
           imagePullPolicy: Always
           volumeMounts:
             - name: data
