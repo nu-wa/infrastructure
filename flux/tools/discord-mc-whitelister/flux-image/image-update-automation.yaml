@@ -10,7 +10,7 @@ spec:
         name: flux-system
         namespace: flux-system
     update:
-        path: ./clusters/cluster.internal.pve/tools/discord-mc-whitelister
+        path: ./flux/tools/discord-mc-whitelister
         strategy: Setters
     git:
         checkout:
