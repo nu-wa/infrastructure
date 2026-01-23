@@ -9,6 +9,8 @@ metadata:
     deployment: discord-bot-minecraft-whitelister
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: discord-bot
@@ -43,7 +45,7 @@ spec:
               mountPath: /app/data
       containers:
         - name: discord-bot
-          image: "harbor.internal.yannis.codes/registry/discord-bot-minecraft-whitelister:a3e608ef-1749434422" # {"$imagepolicy": "tools:discord-bot-minecraft-whitelister"}
+          image: "harbor.internal.yannis.codes/registry/discord-bot-minecraft-whitelister@sha256:8f2cde4eaefd014fb2cbbd1d0e848cfff609808c0c3021fc8930a7ba954f53bd" # {"$imagepolicy": "tools:discord-bot-minecraft-whitelister"}
           imagePullPolicy: Always
           volumeMounts:
             - name: data
