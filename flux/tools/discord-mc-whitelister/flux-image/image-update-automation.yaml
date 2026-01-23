@@ -15,9 +15,9 @@ spec:
     git:
         checkout:
             ref:
-                branch: master
+                branch: main
         push:
-            branch: master
+            branch: main
         commit:
             author:
                 email: group258_bot1@noreply.git.yannis.codes
