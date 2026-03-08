@@ -80,7 +80,7 @@ spec:
         type: ClusterIP
       spec:
         port: "8428"
-        retentionPeriod: "1"
+        retentionPeriod: "1d"
         storage:
           storageClassName: longhorn
           accessModes:
