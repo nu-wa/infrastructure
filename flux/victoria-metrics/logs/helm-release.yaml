@@ -33,7 +33,7 @@ spec:
         tag: "v1.43.1"
       replicaCount: 1
       retentionPeriod: 30d
-      retentionDiskSpaceUsage: "16G"
+      retentionDiskSpaceUsage: "16GiB"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
