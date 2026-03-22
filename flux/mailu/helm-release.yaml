@@ -128,6 +128,17 @@ spec:
           - ReadWriteOnce
         claimNameOverride: "mailu-rspamd"
         existingClaim: "mailu-rspamd"
+      overrides:
+          settings.conf: |
+            sendgrid_nogreylist {
+              priority = high;
+
+              from = "@sendgrid.net";
+
+              apply {
+                symbols_disabled = ["GREYLIST_CHECK"];
+              }
+            }
     redis:
       extraEnvVarsCM: "extra-config"
       master:
