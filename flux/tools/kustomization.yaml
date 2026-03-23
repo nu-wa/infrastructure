@@ -3,6 +3,9 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
 
+  - ./valkey/helm-release.yaml
+  - ./valkey/helm-repository.yaml
+
   - ./cloudnative-pg/cluster.yaml
   - ./cloudnative-pg/databases.yaml
   - ./cloudnative-pg/helm-repository.yaml
