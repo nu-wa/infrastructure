@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmchart-source-v1.json
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: valkey
+  namespace: tools
+spec:
+  interval: 10m
+  chart: valkey
+  sourceRef:
+    kind: HelmRepository
+    name: valkey
+  version: "0.9.3"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: valkey
+  namespace: tools
+spec:
+  interval: 1m0s
+  targetNamespace: tools
+  chartRef:
+    kind: HelmChart
+    name: valkey
+    namespace: tools
+  values:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: usage
+                  operator: In
+                  values:
+                    - worker
+    dataStorage:
+      enabled: true
+      requestedSize: 32Gi
+      className: "longhorn"
