@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./namespace.yaml
+    
+  - helm-release.yaml
+
+  - ./flux-image/image-policy.yaml
+  - ./flux-image/image-repository.yaml
+  - ./flux-image/image-update-automation.yaml
+  
+  - ./charts.ksbh.rs/job.yaml
+  - ./charts.ksbh.rs/flux-image/image-policy.yaml
+  - ./charts.ksbh.rs/flux-image/image-repository.yaml
+  - ./charts.ksbh.rs/flux-image/image-update-automation.yaml
+
+  - ./docs.ksbh.rs/job.yaml
+  - ./docs.ksbh.rs/flux-image/image-policy.yaml
+  - ./docs.ksbh.rs/flux-image/image-repository.yaml
+  - ./docs.ksbh.rs/flux-image/image-update-automation.yaml
+
+  - ./modules/http_to_https.yaml
+  - ./ingress.yaml

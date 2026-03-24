@@ -1,0 +1,8 @@
+apiVersion: modules.ksbh.rs/v1
+kind: ModuleConfiguration
+metadata:
+  name: https
+spec:
+  name: https
+  type: HttpToHttps
+  weight: 10000

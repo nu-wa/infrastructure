@@ -1,0 +1,48 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ksbh
+  namespace: ksbh
+spec:
+  interval: 1m0s
+  targetNamespace: ksbh
+  chart:
+    spec:
+      chart: ./flux/ksbh/chart
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+  chartRef:
+    kind: HelmChart
+    name: ksbh
+    namespace: ksbh
+  values:
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: usage
+                  operator: In
+                  values:
+                    - worker
+    image:
+      repository: "nuwa24/ksbh" # {"$imagepolicy": "ksbh:ksbh"}
+      tag: "latest-dev"
+      pullPolicy: Always
+    app:
+      redisUrl: "redis://tools-valkey.tools.svc.cluster.local:6379"
+      configPaths:
+        modules: "/app/data/modules"
+    persistence:
+      enabled: true
+      claimName: "ksbh-data"
+      size: 64Gi
+      storageClassName: "longhorn"
+      mountPath: /app/data
+    service:
+      type: LoadBalancer
+      loadBalancerIP: 10.15.25.110 

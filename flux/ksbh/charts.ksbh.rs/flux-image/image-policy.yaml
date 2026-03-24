@@ -1,0 +1,14 @@
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+    name: ksbh-charts
+    namespace: ksbh
+spec:
+    imageRepositoryRef:
+        name: ksbh-charts
+    filterTags:
+        pattern: '^[a-f0-9]{12}-(?P<ts>[0-9]{14})$'
+        extract: '$ts'
+    policy:
+        numerical:
+            order: asc

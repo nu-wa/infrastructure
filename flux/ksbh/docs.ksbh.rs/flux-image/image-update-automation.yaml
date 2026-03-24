@@ -1,0 +1,30 @@
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageUpdateAutomation
+metadata:
+    name: ksbh-docs
+    namespace: ksbh
+spec:
+    interval: 10m
+    sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+    update:
+        path: ./flux/ksbh/docs.ksbh.rs/job.yaml
+        strategy: Setters
+    git:
+        checkout:
+            ref:
+                branch: main
+        push:
+            branch: main
+        commit:
+            author:
+                email: group258_bot1@noreply.git.yannis.codes
+                name: fluxcdbot
+            messageTemplate: |
+                Automated image update
+                
+                {{ range .Changed.Changes -}}
+                - {{ .OldValue }} -> {{ .NewValue }}
+                {{ end -}}

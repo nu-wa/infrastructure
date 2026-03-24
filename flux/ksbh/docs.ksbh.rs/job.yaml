@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: docs-ksbh-rs
+  namespace: ksbh
+spec:
+  ttlSecondsAfterFinished: 300
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: sync
+          image: harbor.internal.yannis.codes/registry/ksbh-docs:latest-dev # {"$imagepolicy": "ksbh:ksbh-docs"}
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              test -d /payload
+              rm -rf /data/static/ksbh.rs
+              mkdir -p /data/static/ksbh.rs
+              cp -a /payload/. /data/static/ksbh.rs
+          volumeMounts:
+            - name: data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: ksbh-data

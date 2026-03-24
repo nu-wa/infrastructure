@@ -1,0 +1,10 @@
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+    name: ksbh-charts
+    namespace: ksbh
+spec:
+    secretRef:
+        name: flux-image-update-registry-auth
+    image: harbor.internal.yannis.codes/registry/ksbh-charts
+    interval: 5m
