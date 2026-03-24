@@ -9,12 +9,9 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: mail
   annotations:
-    cert-manager.io/cluster-issuer: "le-prod"
-    konghq.com/protocols: "https"
-    konghq.com/protocol: "https"
-    konghq.com/https-redirect-status-code: "301"
+    ksbh.rs/modules: "https"
 spec:
-  ingressClassName: kong
+  ingressClassName: ksbh
   tls:
     - secretName: yannis-codes
       hosts:
