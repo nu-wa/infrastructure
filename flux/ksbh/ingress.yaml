@@ -1,7 +1,33 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: docs-static
+  name: ksbh-charts
+  namespace: ksbh
+  annotations:
+    ksbh.rs/modules: "https"
+    ksbh.rs/excluded-modules: "pow"
+spec:
+  ingressClassName: ksbh
+  tls:
+    - hosts:
+        - charts.ksbh.rs
+      secretName: ksbh-rs
+  rules:
+    - host: charts.ksbh.rs
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              resource:
+                apiGroup: service-resource.ksbh.rs
+                kind: static
+                name: charts-ksbh-rs
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ksbh-docs
   namespace: ksbh
   annotations:
     ksbh.rs/modules: "https"
@@ -10,7 +36,6 @@ spec:
   tls:
     - hosts:
         - ksbh.rs
-        - charts.ksbh.rs
       secretName: ksbh-rs
   rules:
     - host: ksbh.rs
@@ -23,13 +48,3 @@ spec:
                 apiGroup: service-resource.ksbh.rs
                 kind: static
                 name: docs-ksbh-rs
-    - host: charts.ksbh.rs
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              resource:
-                apiGroup: service-resource.ksbh.rs
-                kind: static
-                name: charts-ksbh-rs

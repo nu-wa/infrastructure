@@ -1,0 +1,13 @@
+apiVersion: modules.ksbh.rs/v1
+kind: ModuleConfiguration
+metadata:
+  name: pow
+spec:
+  name: pow
+  type: POW
+  requires_body: true
+  global: true
+  secretRef:
+    name: pow-secret
+    namespace: ksbh
+  weight: 10
