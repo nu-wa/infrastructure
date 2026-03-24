@@ -6,6 +6,10 @@ metadata:
   name: ksbh
   namespace: ksbh
 spec:
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
   interval: 1m0s
   targetNamespace: ksbh
   chart:
