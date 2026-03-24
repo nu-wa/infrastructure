@@ -4,6 +4,7 @@ resources:
   - ./namespace.yaml
     
   - helm-release.yaml
+  - helm-repository.yaml
 
   - ./flux-image/image-policy.yaml
   - ./flux-image/image-repository.yaml

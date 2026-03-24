@@ -1,3 +1,17 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmchart-source-v1.json
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmChart
+metadata:
+  name: ksbh
+  namespace: ksbh
+spec:
+  interval: 10m
+  chart: ksbh
+  sourceRef:
+    kind: HelmRepository
+    name: ksbh
+  version: "0.1.0"
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -12,14 +26,10 @@ spec:
     crds: CreateReplace
   interval: 1m0s
   targetNamespace: ksbh
-  chart:
-    spec:
-      chart: ./flux/ksbh/chart
-      reconcileStrategy: Revision
-      sourceRef:
-        kind: GitRepository
-        name: flux-system
-        namespace: flux-system
+  chartRef:
+    kind: HelmChart
+    name: ksbh
+    namespace: ksbh
   values:
     affinity:
       nodeAffinity:
@@ -31,8 +41,8 @@ spec:
                   values:
                     - worker
     image:
-      repository: "nuwa24/ksbh" # {"$imagepolicy": "ksbh:ksbh"}
-      tag: "latest-dev"
+      repository: "nuwa24/ksbh"
+      tag: "latest-dev" # {"$imagepolicy": "ksbh:ksbh"}
       pullPolicy: Always
     app:
       redisUrl: "redis://tools-valkey.tools.svc.cluster.local:6379"
