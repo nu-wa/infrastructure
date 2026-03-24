@@ -3,7 +3,6 @@ kind: Kustomization
 resources:
   - ./authentik
   - ./cert-manager
-  - ./kong
   - ./mailu
   - ./tools
   - ./secrets-kustomization.yaml
