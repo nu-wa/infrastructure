@@ -46,13 +46,11 @@ spec:
     server:
       ingress:
         enabled: true
-        ingressClassName: "kong"
+        ingressClassName: "ksbh"
         hosts:
           - "authentik.yannis.codes"
         annotations:
-          cert-manager.io/cluster-issuer: "le-prod"
-          konghq.com/https-redirect-status-code: "301"
-          konghq.com/protocols: "https"
+          ksbh.rs/modules: "https"
         tls:
           - secretName: yannis-codes
             hosts:
