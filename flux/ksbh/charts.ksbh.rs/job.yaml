@@ -1,29 +1,36 @@
 apiVersion: batch/v1
-kind: Job
+kind: CronJob
 metadata:
   name: charts-ksbh-rs
   namespace: ksbh
 spec:
-  ttlSecondsAfterFinished: 300
-  backoffLimit: 1
-  template:
+  schedule: "* * * * *"
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 30
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
     spec:
-      restartPolicy: Never
-      containers:
-        - name: sync
-          image: harbor.internal.yannis.codes/registry/ksbh-charts:958c748bdffd-20260324155100 # {"$imagepolicy": "ksbh:ksbh-charts"}
-          command:
-            - /bin/sh
-            - -ec
-            - |
-              test -d /payload
-              rm -rf /data/static/charts.ksbh.rs
-              mkdir -p /data/static/charts.ksbh.rs
-              cp -a /payload/. /data/static/charts.ksbh.rs
-          volumeMounts:
+      backoffLimit: 1
+      ttlSecondsAfterFinished: 300
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: sync
+              image: harbor.internal.yannis.codes/registry/ksbh-charts:9bb45de8d65b-20260324182712  # {"$imagepolicy": "ksbh:ksbh-charts"}
+              command:
+                - /bin/sh
+                - -ec
+                - |
+                  test -d /payload
+                  rm -rf /data/static/charts.ksbh.rs
+                  mkdir -p /data/static/charts.ksbh.rs
+                  cp -a /payload/. /data/static/charts.ksbh.rs
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+          volumes:
             - name: data
-              mountPath: /data
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: ksbh-data
+              persistentVolumeClaim:
+                claimName: ksbh-data
