@@ -5,7 +5,7 @@ metadata:
 spec:
   name: pow
   type: POW
-  requiresBbody: true
+  requiresBody: true
   global: true
   secretRef:
     name: pow-secret
