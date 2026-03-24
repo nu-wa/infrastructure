@@ -10,7 +10,7 @@ spec:
         name: flux-system
         namespace: flux-system
     update:
-        path: ./flux/ksbh/ksbh/helm-release.yaml
+        path: ./flux/ksbh/helm-release.yaml
         strategy: Setters
     git:
         checkout:
