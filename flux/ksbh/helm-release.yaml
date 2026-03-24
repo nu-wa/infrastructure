@@ -15,10 +15,6 @@ spec:
         kind: GitRepository
         name: flux-system
         namespace: flux-system
-  chartRef:
-    kind: HelmChart
-    name: ksbh
-    namespace: ksbh
   values:
     affinity:
       nodeAffinity:
