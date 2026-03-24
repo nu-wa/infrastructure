@@ -41,4 +41,6 @@ spec:
       mountPath: /app/data
     service:
       type: LoadBalancer
-      loadBalancerIP: 10.15.25.110 
+      loadBalancerIP: 10.15.25.110
+      http: 80
+      https: 443
