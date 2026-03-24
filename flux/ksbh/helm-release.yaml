@@ -11,6 +11,7 @@ spec:
   chart:
     spec:
       chart: ./flux/ksbh/chart
+      reconcileStrategy: Revision
       sourceRef:
         kind: GitRepository
         name: flux-system
