@@ -19,5 +19,5 @@ resources:
   - ./docs.ksbh.rs/flux-image/image-repository.yaml
   - ./docs.ksbh.rs/flux-image/image-update-automation.yaml
 
-  #  - ./modules/http_to_https.yaml
+  - ./modules/http_to_https.yaml
   - ./ingress.yaml
