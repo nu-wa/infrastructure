@@ -20,5 +20,6 @@ resources:
   - ./docs.ksbh.rs/flux-image/image-update-automation.yaml
 
   - ./modules/http_to_https.yaml
+  - ./modules/robotsdottxt.yaml
   - ./modules/pow.yaml
   - ./ingress.yaml

@@ -1,0 +1,15 @@
+apiVersion: modules.ksbh.rs/v1
+kind: ModuleConfiguration
+metadata:
+  name: robots
+spec:
+  name: robots
+  type: RobotsDotTXT
+  weight: 90
+  global: true
+  requiresProperRequest: false
+  requiresBody: false
+  config:
+    content: |
+      User-agent: *
+      Disallow: /

@@ -1,0 +1,12 @@
+apiVersion: modules.ksbh.rs/v1
+kind: ModuleConfiguration
+metadata:
+  name: oidc
+spec:
+  name: oidc
+  type: OIDC
+  weight: 20
+  global: false
+  secretRef:
+    name: oidc-secret
+    namespace: ksbh
