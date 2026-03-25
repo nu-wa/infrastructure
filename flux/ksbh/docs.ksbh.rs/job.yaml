@@ -1,36 +1,28 @@
 apiVersion: batch/v1
-kind: CronJob
+kind: Job
 metadata:
   name: docs-ksbh-rs
   namespace: ksbh
 spec:
-  schedule: "* * * * *"
-  concurrencyPolicy: Forbid
-  startingDeadlineSeconds: 30
-  successfulJobsHistoryLimit: 1
-  failedJobsHistoryLimit: 1
-  jobTemplate:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 300
+  template:
     spec:
-      backoffLimit: 1
-      ttlSecondsAfterFinished: 300
-      template:
-        spec:
-          restartPolicy: Never
-          containers:
-            - name: sync
-              image: harbor.internal.yannis.codes/registry/ksbh-docs:97d785d7c500-20260325022130 # {"$imagepolicy": "ksbh:ksbh-docs"}
-              command:
-                - /bin/sh
-                - -ec
-                - |
-                  test -d /payload
-                  rm -rf /data/static/ksbh.rs
-                  mkdir -p /data/static/ksbh.rs
-                  cp -a /payload/. /data/static/ksbh.rs
-              volumeMounts:
-                - name: data
-                  mountPath: /data
-          volumes:
+      restartPolicy: Never
+      containers:
+        - name: sync
+          image: harbor.internal.yannis.codes/registry/ksbh-docs:97d785d7c500-20260325022130 # {"$imagepolicy": "ksbh:ksbh-docs"}
+          command:
+            - /bin/sh
+            - -ec
+            - |
+              test -d /payload
+              mkdir -p /data/static/ksbh.rs
+              rsync -a --delete-delay /payload/ /data/static/ksbh.rs/
+          volumeMounts:
             - name: data
-              persistentVolumeClaim:
-                claimName: ksbh-data
+              mountPath: /data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: ksbh-data
