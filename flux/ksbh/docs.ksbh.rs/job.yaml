@@ -11,7 +11,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: sync
-          image: harbor.internal.yannis.codes/registry/ksbh-docs:dac196b48a41-20260326123046 # {"$imagepolicy": "ksbh:ksbh-docs"}
+          image: harbor.internal.yannis.codes/registry/ksbh-docs:69cf4025736d-20260326131008 # {"$imagepolicy": "ksbh:ksbh-docs"}
           command:
             - /bin/sh
             - -ec
