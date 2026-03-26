@@ -48,6 +48,8 @@ spec:
       redisUrl: "redis://tools-valkey.tools.svc.cluster.local:6379"
       configPaths:
         modules: "/app/data/modules"
+      trustedProxies:
+        - 10.15.0.0/16 
     persistence:
       enabled: true
       claimName: "ksbh-data"
