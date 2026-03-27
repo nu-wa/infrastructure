@@ -37,62 +37,39 @@ spec:
                     operator: In
                     values:
                       - worker
-      env:
-        - name: AUTHENTIK_DEFAULT_USER_CHANGE_USERNAME
-          value: "true"
-      envFrom:
-        - secretRef:
-            name: "authentik-secrets"
+
+    postgresql:
+      enabled: false
+
+    authentik:
+      existingSecret:
+        secretName: authentik-secrets
+      log_level: debug
+      postgresql:
+        host: global-pg-rw.tools.svc.cluster.local
+        name: authentik
+        port: 5432
+      redis:
+        host: authentik-redis-headless.authentik.svc.cluster.local
+      email:
+        host: mailu-front.mailu.svc.cluster.local
+        username: authentik@yannis.codes
+        use_tls: true
+      avatars: none
+      error_reporting:
+        enabled: false
+      disable_update_check: true
+      disable_startup_analytics: true
+
     server:
       ingress:
         enabled: true
-        ingressClassName: "ksbh"
+        ingressClassName: ksbh
         hosts:
-          - "authentik.yannis.codes"
+          - authentik.yannis.codes
         annotations:
           ksbh.rs/modules: "https"
         tls:
           - secretName: yannis-codes
             hosts:
               - authentik.yannis.codes
-      volumes:
-        - name: postgres-creds
-          secret:
-            secretName: pgsql-authentik
-      volumeMounts:
-        - name: postgres-creds
-          mountPath: /postgres-creds
-          readOnly: true
-    worker:
-      volumes:
-        - name: postgres-creds
-          secret:
-            secretName: pgsql-authentik
-      volumeMounts:
-        - name: postgres-creds
-          mountPath: /postgres-creds
-          readOnly: true
-    authentik:
-      env:
-        - name: AUTHENTIK_DEFAULT_USER_CHANGE_USERNAME
-          value: "true"
-      envFrom:
-        - secretRef:
-            name: "authentik-secrets"
-      postgresql:
-        host: "global-pg-rw.tools.svc.cluster.local"
-        user: file:///postgres-creds/username
-        name: authentik
-        password: file:///postgres-creds/password
-        log_level: debug
-      email:
-        host: "mailu-front.mailu.svc.cluster.local"
-        username: "authentik@yannis.codes"
-        use_tls: true
-      redis:
-        host: "authentik-redis-headless.authentik.svc.cluster.local"
-      avatars: none
-      error_reporting:
-        enabled: false
-      disable_update_check: true
-      disable_startup_analytics: true
