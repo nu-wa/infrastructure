@@ -37,6 +37,9 @@ spec:
                     operator: In
                     values:
                       - worker
+      envFrom:
+        - secretRef:
+            name: authentik-secrets
 
     postgresql:
       enabled: false
