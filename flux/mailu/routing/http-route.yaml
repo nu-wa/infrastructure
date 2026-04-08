@@ -10,7 +10,8 @@ metadata:
     app.kubernetes.io/name: mail
   annotations:
     ksbh.rs/modules: "https"
-    ksbh.rs/protocol: "https"
+    ksbh.rs/mtls: true
+    ksbh.rs/mtls/sni: "mail.yannis.codes"
 spec:
   ingressClassName: ksbh
   tls:
