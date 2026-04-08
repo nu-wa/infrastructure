@@ -22,5 +22,6 @@ resources:
 
   - ./modules/http_to_https.yaml
   - ./modules/robotsdottxt.yaml
+  - ./modules/oidc.yaml
   - ./modules/pow.yaml
   - ./ingress.yaml
