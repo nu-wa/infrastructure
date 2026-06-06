@@ -73,12 +73,13 @@ spec:
       HTTP_PROXY: "http://squid.vlan.internal.nether:3128"
       HTTPS_PROXY: "http://squid.vlan.internal.nether:3128"
       NO_PROXY: "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.svc,.cluster.local,.internal.nether"
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: usage
-                  operator: In
-                  values:
-                    - worker
+    selectors:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: usage
+                    operator: In
+                    values:
+                      - worker
