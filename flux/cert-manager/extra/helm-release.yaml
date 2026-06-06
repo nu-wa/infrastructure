@@ -27,7 +27,6 @@ spec:
     name: cert-manager-webhook-ovh
     namespace: cert-manager
   values:
-    configVersion: "0.0.2"
     groupName: cluster.internal.nether
     certManager:
       namespace: cert-manager
@@ -69,17 +68,18 @@ spec:
           applicationSecretRef:
             name: ovh-credentials
             key: OVH_APPLICATION_SECRET
-    environment:
-      HTTP_PROXY: "http://squid.vlan.internal.nether:3128"
-      HTTPS_PROXY: "http://squid.vlan.internal.nether:3128"
-      NO_PROXY: "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.svc,.cluster.local,.internal.nether"
-    selectors:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: usage
-                    operator: In
-                    values:
-                      - worker
+    pod:
+      environment:
+        HTTP_PROXY: "http://squid.vlan.internal.nether:3128"
+        HTTPS_PROXY: "http://squid.vlan.internal.nether:3128"
+        NO_PROXY: "127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,.svc,.cluster.local,.internal.nether"
+      selectors:
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: usage
+                      operator: In
+                      values:
+                        - worker
