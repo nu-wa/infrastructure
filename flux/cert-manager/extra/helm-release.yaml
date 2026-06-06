@@ -11,7 +11,7 @@ spec:
   sourceRef:
     kind: HelmRepository
     name: cert-manager-webhook-ovh
-  version: "0.8.0"
+  version: "0.9.10"
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -82,4 +82,3 @@ spec:
                   operator: In
                   values:
                     - worker
-
