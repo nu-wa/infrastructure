@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vpn-debug
+  namespace: media
+data:
+  wg0-post.sh: |
+    #!/usr/bin/env bash
+    set -x
+
+    echo "=== wg show ==="
+    wg show || true
+
+    echo "=== ip addr ==="
+    ip addr || true
+
+    echo "=== ip route ==="
+    ip route || true
+
+    echo "=== resolv.conf ==="
+    cat /etc/resolv.conf || true
+
+    echo "=== dns proton ==="
+    getent hosts proton.me || true
+    getent hosts ip.me || true
+
+    echo "=== direct dns ==="
+    nslookup ip.me 10.2.0.1 || true
+    nslookup ip.me 1.1.1.1 || true
+
+    echo "=== curl ==="
+    curl -4 -v --connect-timeout 15 https://ip.me || true
+    curl -4 -v --connect-timeout 15 https://ifconfig.me || true

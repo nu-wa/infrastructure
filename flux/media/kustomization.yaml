@@ -33,6 +33,7 @@ resources:
 
   - ./sabnzbd/pvc.yaml
   - ./sabnzbd/svc.yaml
+  - ./sabnzbd/tmp-debug.yaml
   - ./sabnzbd/http-route.yaml
   - ./sabnzbd/deployment.yaml
 
