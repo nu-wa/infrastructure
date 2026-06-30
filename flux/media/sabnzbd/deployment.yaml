@@ -107,7 +107,7 @@ spec:
             claimName: media-nfs
         - name: proton
           secret:
-            secretName: proton
+            secretName: proton-sabn
         - name: tun
           hostPath:
             path: /dev/net/tun

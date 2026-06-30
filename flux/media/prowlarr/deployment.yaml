@@ -90,7 +90,7 @@ spec:
             claimName: prowlarr-config
         - name: proton
           secret:
-            secretName: proton
+            secretName: proton-prowlarr
         - name: tun
           hostPath:
             path: /dev/net/tun
