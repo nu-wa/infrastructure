@@ -62,6 +62,8 @@ spec:
       className: "ksbh"
       annotations:
         cert-manager.io/cluster-issuer: "le-prod"
+        ksbh.rs/modules: "https"
+        ksbh.rs/excluded-modules: "pow"
       hosts:
         - host: 67mjelly.kys.dog
           paths:
