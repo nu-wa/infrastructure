@@ -49,7 +49,7 @@ spec:
       - name: LOG_LEVEL
         value: info
     ingress:
-      enable: true
+      enabled: true
       ingressClassName: "ksbh"
       annotations:
         ksbh.rs/modules: "oidc"
