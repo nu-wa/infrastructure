@@ -75,6 +75,8 @@ spec:
               value: "true"
             - name: VPN_HEALTHCHECK_ENABLED
               value: "true"
+            - name: VPN_NAMESERVERS
+              value: "wg"
           volumeMounts:
             - name: config
               mountPath: /config

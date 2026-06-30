@@ -8,26 +8,44 @@ data:
     #!/usr/bin/env bash
     set -x
 
+    WG_CONF="/config/wireguard/wg0.conf"
+
+    ENDPOINT="$(awk -F'= *' '/^Endpoint/ {print $2}' "$WG_CONF" | tr -d ' ')"
+    ENDPOINT_HOST="${ENDPOINT%:*}"
+    ENDPOINT_PORT="${ENDPOINT##*:}"
+
+    # Cilium pod routing usually has a link route like:
+    # 10.42.6.253 dev eth0 scope link
+    ETH_GW="$(ip route show dev eth0 | awk '$2 == "dev" && $3 == "eth0" {print $1; exit}')"
+
+    echo "Endpoint: ${ENDPOINT_HOST}:${ENDPOINT_PORT}"
+    echo "Eth gateway: ${ETH_GW}"
+
+    if [ -n "$ENDPOINT_HOST" ] && [ -n "$ETH_GW" ]; then
+      ip route replace "${ENDPOINT_HOST}/32" via "${ETH_GW}" dev eth0
+    fi
+
+    # Hotio's nft table has default-drop policies. Allow the OUTER WireGuard
+    # UDP session to the Proton endpoint on eth0.
+    if nft list table inet hotio >/dev/null 2>&1; then
+      nft add rule inet hotio output oifname "eth0" ip daddr "$ENDPOINT_HOST" udp dport "$ENDPOINT_PORT" counter accept 2>/dev/null || true
+      nft add rule inet hotio input  iifname "eth0" ip saddr "$ENDPOINT_HOST" udp sport "$ENDPOINT_PORT" counter accept 2>/dev/null || true
+      nft add rule inet hotio input  iifname "eth0" ct state established,related counter accept 2>/dev/null || true
+    fi
+
     echo "=== wg show ==="
     wg show || true
-
-    echo "=== ip addr ==="
-    ip addr || true
 
     echo "=== ip route ==="
     ip route || true
 
-    echo "=== resolv.conf ==="
-    cat /etc/resolv.conf || true
+    echo "=== nft hotio ==="
+    nft list table inet hotio || true
 
-    echo "=== dns proton ==="
-    getent hosts proton.me || true
-    getent hosts ip.me || true
-
-    echo "=== direct dns ==="
+    echo "=== DNS checks ==="
     nslookup ip.me 10.2.0.1 || true
     nslookup ip.me 1.1.1.1 || true
 
-    echo "=== curl ==="
+    echo "=== curl checks ==="
     curl -4 -v --connect-timeout 15 https://ip.me || true
     curl -4 -v --connect-timeout 15 https://ifconfig.me || true
