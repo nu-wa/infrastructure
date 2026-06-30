@@ -52,7 +52,7 @@ spec:
       enabled: true
       ingressClassName: "ksbh"
       annotations:
-        ksbh.rs/modules: "oidc"
+        ksbh.rs/modules: "https,oidc"
       tls:
         - hosts:
             - seerr.kys.dog
