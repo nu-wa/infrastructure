@@ -82,7 +82,7 @@ spec:
               mountPath: /data
             - name: tun
               mountPath: /dev/net/tun
-            - name: protonvpn-wireguard
+            - name: proton
               mountPath: /config/wireguard/wg0.conf
               subPath: wg0.conf
               readOnly: true
