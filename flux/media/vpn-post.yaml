@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vpn-post
+  namespace: media
+data:
+  wg0-post.sh: |
+    #!/usr/bin/env bash
+    set -e
+
+    WG_CONF="/config/wireguard/wg0.conf"
+
+    ENDPOINT="$(awk -F'= *' '/^Endpoint/ {print $2}' "$WG_CONF" | tr -d ' ')"
+    ENDPOINT_HOST="${ENDPOINT%:*}"
+    ENDPOINT_PORT="${ENDPOINT##*:}"
+
+    if nft list table inet hotio >/dev/null 2>&1; then
+      nft add rule inet hotio output oifname "eth0" ip daddr "$ENDPOINT_HOST" udp dport "$ENDPOINT_PORT" counter accept 2>/dev/null || true
+      nft add rule inet hotio input  iifname "eth0" ip saddr "$ENDPOINT_HOST" udp sport "$ENDPOINT_PORT" counter accept 2>/dev/null || true
+      nft add rule inet hotio input  iifname "eth0" ct state established,related counter accept 2>/dev/null || true
+    fi

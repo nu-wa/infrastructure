@@ -90,14 +90,14 @@ spec:
               mountPath: /config/wireguard/wg0.conf
               subPath: wg0.conf
               readOnly: true
-            - name: vpn-debug
+            - name: vpn-post
               mountPath: /config/wireguard/wg0-post.sh
               subPath: wg0-post.sh
               readOnly: true
       volumes:
-        - name: vpn-debug
+        - name: vpn-post
           configMap:
-            name: vpn-debug
+            name: vpn-post
             defaultMode: 0755
         - name: config
           persistentVolumeClaim:
