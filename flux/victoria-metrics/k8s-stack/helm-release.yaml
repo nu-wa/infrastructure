@@ -60,10 +60,10 @@ spec:
         hosts:
           - vm-gr.kys.dog
         annotations:
-          ksbh.rs/modules: "oidc-authentik"
+          ksbh.rs/modules: "oidc"
         tls:
           - hosts:
-            - vm-gr.kys.dog
+              - vm-gr.kys.dog
             secretName: kys-dog
       persistence:
         enabled: true
@@ -94,10 +94,10 @@ spec:
         hosts:
           - vm.kys.dog
         annotations:
-          ksbh.rs/modules: "oidc-authentik"
+          ksbh.rs/modules: "oidc"
         tls:
           - hosts:
-            - vm.kys.dog
+              - vm.kys.dog
             secretName: kys-dog
     vmalert:
       enabled: true
@@ -110,10 +110,10 @@ spec:
         hosts:
           - vm-al.kys.dog
         annotations:
-          ksbh.rs/modules: "oidc-authentik"
+          ksbh.rs/modules: "oidc"
         tls:
           - hosts:
-            - vm-al.kys.dog
+              - vm-al.kys.dog
             secretName: kys-dog
     vmagent:
       enabled: true
@@ -129,44 +129,50 @@ spec:
         hosts:
           - vm-ag.kys.dog
         annotations:
-          ksbh.rs/modules: "oidc-authentik"
+          ksbh.rs/modules: "oidc"
         tls:
           - hosts:
-            - vm-ag.kys.dog
+              - vm-ag.kys.dog
             secretName: kys-dog
       extraScrapeConfigs:
-        - job_name: 'k8s-services'
+        - job_name: "k8s-services"
           kubernetes_sd_configs:
             - role: service
           relabel_configs:
-            - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+            - source_labels:
+                [__meta_kubernetes_service_annotation_prometheus_io_scrape]
               action: keep
               regex: true
-            - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+            - source_labels:
+                [__meta_kubernetes_service_annotation_prometheus_io_path]
               action: replace
               target_label: __metrics_path__
               regex: (.+)
               replacement: $1
-            - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_port]
+            - source_labels:
+                [__meta_kubernetes_service_annotation_prometheus_io_port]
               action: replace
               target_label: __address__
               regex: (\d+)
               replacement: $1
             - source_labels: [__meta_kubernetes_service_name]
               target_label: job
-        - job_name: 'k8s-pods'
+        - job_name: "k8s-pods"
           kubernetes_sd_configs:
             - role: pod
           relabel_configs:
-            - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            - source_labels:
+                [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
               action: keep
               regex: true
-            - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            - source_labels:
+                [__meta_kubernetes_pod_annotation_prometheus_io_path]
               action: replace
               target_label: __metrics_path__
               regex: (.+)
               replacement: $1
-            - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port]
+            - source_labels:
+                [__meta_kubernetes_pod_annotation_prometheus_io_port]
               action: replace
               target_label: __address__
               regex: (\d+)
@@ -184,10 +190,10 @@ spec:
         hosts:
           - vm-am.kys.dog
         annotations:
-          ksbh.rs/modules: "oidc-authentik"
+          ksbh.rs/modules: "oidc"
         tls:
           - hosts:
-            - vm-am.kys.dog
+              - vm-am.kys.dog
             secretName: kys-dog
     defaultDatasources:
       victoriametrics:
@@ -225,4 +231,3 @@ spec:
       enabled: true
     kubeProxy:
       enabled: false
-

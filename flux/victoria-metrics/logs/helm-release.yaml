@@ -38,11 +38,11 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - matchExpressions:
-              - key: usage
-                operator: In
-                values:
-                - worker
+              - matchExpressions:
+                  - key: usage
+                    operator: In
+                    values:
+                      - worker
       persistentVolume:
         enabled: true
         storageClassName: "longhorn"
@@ -52,7 +52,7 @@ spec:
         enabled: true
         ingressClassName: "ksbh"
         annotations:
-          ksbh.rs/modules: "oidc-authentik"
+          ksbh.rs/modules: "oidc"
         hosts:
           - name: "vm-logs.kys.dog"
             path: "/"
