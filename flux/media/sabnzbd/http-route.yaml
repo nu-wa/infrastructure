@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sabnzbd
+  namespace: media
+  labels:
+    app.kubernetes.io/name: sabnzbd
+  annotations:
+    ksbh.rs/modules: "https,oidc"
+spec:
+  ingressClassName: ksbh
+  tls:
+    - secretName: kys.dog
+      hosts:
+        - sabnzbd.kys.dog
+  rules:
+    - host: sabnzbd.kys.dog
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: sabnzbd
+                port:
+                  number: 8080

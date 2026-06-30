@@ -9,14 +9,17 @@ resources:
 
   - ./bazarr/pvc.yaml
   - ./bazarr/svc.yaml
+  - ./bazarr/http-route.yaml
   - ./bazarr/deployment.yaml
 
   - ./prowlarr/pvc.yaml
   - ./prowlarr/svc.yaml
+  - ./prowlarr/http-route.yaml
   - ./prowlarr/deployment.yaml
 
   - ./radarr/pvc.yaml
   - ./radarr/svc.yaml
+  - ./radarr/http-route.yaml
   - ./radarr/deployment.yaml
 
   - ./recyclarr/pvc.yaml
@@ -25,10 +28,12 @@ resources:
 
   - ./sonarr/pvc.yaml
   - ./sonarr/svc.yaml
+  - ./sonarr/http-route.yaml
   - ./sonarr/deployment.yaml
 
   - ./sabnzbd/pvc.yaml
   - ./sabnzbd/svc.yaml
+  - ./sabnzbd/http-route.yaml
   - ./sabnzbd/deployment.yaml
 
   - ./seerr/helm-release.yaml

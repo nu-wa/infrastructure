@@ -68,7 +68,7 @@ spec:
             - name: VPN_PROVIDER
               value: "proton"
             - name: VPN_LAN_NETWORK
-              value: "10.0.0.0/8"
+              value: "10.15.0.0/16"
             - name: VPN_LAN_LEAK_ENABLED
               value: "false"
             - name: VPN_AUTO_PORT_FORWARD
