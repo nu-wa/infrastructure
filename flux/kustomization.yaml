@@ -8,3 +8,4 @@ resources:
   - ./secrets-kustomization.yaml
   - ./victoria-metrics
   - ./ksbh
+  - ./media
