@@ -5,3 +5,30 @@ resources:
 
   - ./jellyfin/helm-release.yaml
   - ./jellyfin/helm-repository.yaml
+
+  - ./bazarr/pvc.yaml
+  - ./bazarr/svc.yaml
+  - ./bazarr/deployment.yaml
+
+  - ./prowlarr/pvc.yaml
+  - ./prowlarr/svc.yaml
+  - ./prowlarr/deployment.yaml
+
+  - ./radarr/pvc.yaml
+  - ./radarr/svc.yaml
+  - ./radarr/deployment.yaml
+
+  - ./recyclarr/pvc.yaml
+  - ./recyclarr/cron.yaml
+  - ./recyclarr/configmap.yaml
+
+  - ./sonarr/pvc.yaml
+  - ./sonarr/svc.yaml
+  - ./sonarr/deployment.yaml
+
+  - ./sabnzbd/pvc.yaml
+  - ./sabnzbd/svc.yaml
+  - ./sabnzbd/deployment.yaml
+
+  - ./seerr/helm-release.yaml
+  - ./seerr/helm-repository.yaml
