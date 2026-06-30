@@ -43,6 +43,10 @@ spec:
         - name: prowlarr
           image: ghcr.io/hotio/prowlarr:latest
           imagePullPolicy: IfNotPresent
+          securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN
           ports:
             - name: http
               containerPort: 9696
