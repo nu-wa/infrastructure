@@ -57,6 +57,8 @@ spec:
               value: "1001"
             - name: UMASK
               value: "002"
+            - name: DEBUG
+              value: "yes"
             - name: TZ
               value: Europe/Berlin
             - name: WEBUI_PORTS

@@ -61,4 +61,4 @@ spec:
         - host: seerr.kys.dog
           paths:
             - path: /
-              pathType: ImplementationSpecific
+              pathType: Prefix
